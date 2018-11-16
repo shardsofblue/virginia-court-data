@@ -1,6 +1,6 @@
 # Memo: Preliminary Analysis
 
-I have done the majority of my work in the _[analysis.sql](https://github.com/shardsofblue/virginia-court-data/blob/master/analysis.sql)_ file. Some work is also in the _(sentence-time-by-race.xlsx)[https://github.com/shardsofblue/virginia-court-data/blob/master/sentence-time-by-race.xlsx]_ file.
+I have done the majority of my work in _[analysis.sql](https://github.com/shardsofblue/virginia-court-data/blob/master/analysis.sql)_. Some work is also in _[sentence-time-by-race.xlsx](https://github.com/shardsofblue/virginia-court-data/blob/master/sentence-time-by-race.xlsx)_.
 
 I used a variety of grouping schemes and filters to try to get a meaningful understanding of the data:
 * I looked at data for the 10 years from 2007-2017
