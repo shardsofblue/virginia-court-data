@@ -1,0 +1,12 @@
+Appeal Withdrawn,1
+Dismissed,11160 - dropped by judge
+Guilty,584350
+Mistrial,1682
+No Indictment Presented,3
+Nolle Prosequi,4214 - dropped by prosecutor
+Not Guilty/Acquitted,12331
+Not Guilty By Reason Of Insanity,448
+Not True Bill,22 - ??
+Remanded,28 - sent back for another decision
+Resolved,6266 - ??
+Sentence/Probation Revoked,57533 - crimes/violations committed during probation

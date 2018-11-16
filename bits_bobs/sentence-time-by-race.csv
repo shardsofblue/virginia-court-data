@@ -1,0 +1,43 @@
+Race,trial_or_plea,sentence_time,how_many,percent
+White Caucasian (Non-Hispanic),Trial,40 years or more,12,3.22
+White Caucasian (Non-Hispanic),Trial,between 10 and 40 years,54,14.48
+White Caucasian (Non-Hispanic),Trial,between 1 and 5 years,108,28.95
+White Caucasian (Non-Hispanic),Trial,between 5 and 10 years,52,13.94
+White Caucasian (Non-Hispanic),Trial,death penalty,1,0.27
+White Caucasian (Non-Hispanic),Trial,less than 1 year,144,38.61
+White Caucasian (Non-Hispanic),Trial,life sentence,1,0.27
+White Caucasian (Non-Hispanic),Trial,none,1,0.27
+White Caucasian (Non-Hispanic),Trial,NULL,373,100
+White Caucasian (Non-Hispanic),NULL,NULL,373,100
+NULL,NULL,NULL,373,100
+White Caucasian (Non-Hispanic),Plea,40 years or more,13,1.93
+White Caucasian (Non-Hispanic),Plea,between 10 and 40 years,90,13.37
+White Caucasian (Non-Hispanic),Plea,between 1 and 5 years,206,30.61
+White Caucasian (Non-Hispanic),Plea,between 5 and 10 years,91,13.52
+White Caucasian (Non-Hispanic),Plea,death penalty,1,0.15
+White Caucasian (Non-Hispanic),Plea,less than 1 year,270,40.12
+White Caucasian (Non-Hispanic),Plea,life sentence,1,0.15
+White Caucasian (Non-Hispanic),Plea,none,1,0.15
+White Caucasian (Non-Hispanic),Plea,NULL,673,100
+White Caucasian (Non-Hispanic),NULL,NULL,673,100
+NULL,NULL,NULL,673,100
+Black (Non-Hispanic),Trial,40 years or more,23,5.78
+Black (Non-Hispanic),Trial,between 10 and 40 years,65,16.33
+Black (Non-Hispanic),Trial,between 1 and 5 years,105,26.38
+Black (Non-Hispanic),Trial,between 5 and 10 years,71,17.84
+Black (Non-Hispanic),Trial,less than 1 year,132,33.17
+Black (Non-Hispanic),Trial,life sentence,1,0.25
+Black (Non-Hispanic),Trial,none,1,0.25
+Black (Non-Hispanic),Trial,NULL,398,100
+Black (Non-Hispanic),NULL,NULL,398,100
+NULL,NULL,NULL,398,100
+Black (Non-Hispanic),Plea,40 years or more,15,2.35
+Black (Non-Hispanic),Plea,between 10 and 40 years,104,16.3
+Black (Non-Hispanic),Plea,between 1 and 5 years,155,24.29
+Black (Non-Hispanic),Plea,between 5 and 10 years,98,15.36
+Black (Non-Hispanic),Plea,less than 1 year,264,41.38
+Black (Non-Hispanic),Plea,life sentence,1,0.16
+Black (Non-Hispanic),Plea,none,1,0.16
+Black (Non-Hispanic),Plea,NULL,638,100
+Black (Non-Hispanic),NULL,NULL,638,100
+NULL,NULL,NULL,638,100
