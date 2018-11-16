@@ -1,6 +1,6 @@
 # Memo: Preliminary Analysis
 
-Please find the repository for this project [here](https://github.com/shardsofblue/virginia-court-data). [Sean please note this is different from the CNS one.]
+Please find the repository for this project [here](https://github.com/shardsofblue/virginia-court-data). _[Sean please note this is different from the CNS repository.]_
 
 The majority of my work is in _[analysis.sql](https://github.com/shardsofblue/virginia-court-data/blob/master/analysis.sql)_. Some work is also in _[sentence-time-by-race.xlsx](https://github.com/shardsofblue/virginia-court-data/blob/master/sentence-time-by-race.xlsx)_.
 
