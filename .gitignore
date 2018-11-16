@@ -1,3 +1,21 @@
+##################
+# Folder for holding large datasets
+##################
+data
+
+##################
+# Mac ugly bits
+##################
+._*
+~$*
+.DS_Store
+*.swp
+*~.nib
+
+##################
+# R
+##################
+
 # History files
 .Rhistory
 .Rapp.history
@@ -34,3 +52,78 @@ vignettes/*.pdf
 
 # Shiny token, see https://shiny.rstudio.com/articles/shinyapps.html
 rsconnect/
+
+###########################
+# ignore generated binaries
+# but not the data folder
+###########################
+
+/bin/*
+!/bin/data/
+
+#########
+# general
+#########
+
+[Bb]uild/
+[Oo]bj/
+*.o
+[Dd]ebug*/
+[Rr]elease*/
+*.mode*
+*.app/
+*.pyc
+.svn/
+*.log
+
+########################
+# IDE files which should
+# be ignored
+########################
+
+# XCode
+*.pbxuser
+*.perspective
+*.perspectivev3
+*.mode1v3
+*.mode2v3
+# XCode 4
+xcuserdata
+*.xcworkspace
+
+# Code::Blocks
+*.depend
+*.layout
+
+# Visual Studio
+*.sdf
+*.opensdf
+*.suo
+*.pdb
+*.ilk
+*.aps
+ipch/
+
+# Eclipse
+.metadata
+local.properties
+.externalToolBuilders
+
+##################
+# other operating systems
+##################
+
+# Linux
+*~
+# KDE
+.directory
+.AppleDouble
+
+# Windows
+# Image file caches
+Thumbs.db
+# Folder config file
+Desktop.ini
+
+# Android
+.csettings
