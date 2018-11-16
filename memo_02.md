@@ -1,14 +1,6 @@
 # Memo: Preliminary Analysis
 
-I have done the majority of my work in _[analysis.sql](https://github.com/shardsofblue/virginia-court-data/blob/master/analysis.sql)_. Some work is also in _[sentence-time-by-race.xlsx](https://github.com/shardsofblue/virginia-court-data/blob/master/sentence-time-by-race.xlsx)_.
-
-I used a variety of grouping schemes and filters to try to get a meaningful understanding of the data:
-* I looked at data for the 10 years from 2007-2017
-* I usually looked only at people found guilty, but I did remove this filter to determine the rates of conviction.
-* I used percentages, not just raw numbers, in all my queries, and ensured the percents were meaningful by looking at percents within defined groups.
-* I simplified the disposition codes by grouping them into "found" and "not found" guilty. _This probably needs more refinement._
-* After noting the low rates of people of other races, I restricted my racial examination to black and white people for clarity.
-* I adjusted sentence lengths for sentence suspensions and grouped them into blocks of time periods.
+The majority of my work is in _[analysis.sql](https://github.com/shardsofblue/virginia-court-data/blob/master/analysis.sql)_. Some work is also in _[sentence-time-by-race.xlsx](https://github.com/shardsofblue/virginia-court-data/blob/master/sentence-time-by-race.xlsx)_.
 
 ## Gender Analysis
 
@@ -35,7 +27,15 @@ I have moved instead to a racial analysis. (_analysis.sql_ Line 307) Specificall
  * 3 percent more black people than white got 5+ years as a result of going to trial.
  * 1 percent more black people than white got 10+ years as a result of going to trial.
 
+## Other Notes
 
+I used a variety of grouping schemes and filters to try to get a meaningful understanding of the data:
+* I looked at data for the 10 years from 2007-2017
+* I usually looked only at people found guilty, but I did remove this filter to determine the rates of conviction.
+* I used percentages, not just raw numbers, in all my queries, and ensured the percents were meaningful by looking at percents within defined groups.
+* I simplified the disposition codes by grouping them into "found" and "not found" guilty. _This probably needs more refinement._
+* After noting the low rates of people of other races, I restricted my racial examination to black and white people for clarity.
+* I adjusted sentence lengths for sentence suspensions and grouped them into blocks of time periods.
 
 
 
