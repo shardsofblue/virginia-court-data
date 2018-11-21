@@ -661,9 +661,10 @@ ORDER BY "how_many" DESC;
 /* 
 newfield = SentenceTime - SentenceSuspended
 */
-SELECT CASE WHEN "CircuitCriminalCase"."SentenceSuspended" IS NOT NULL
-	THEN ("CircuitCriminalCase"."SentenceTime" - "CircuitCriminalCase"."SentenceSuspended") 
-	ELSE "CircuitCriminalCase"."SentenceTime"
+SELECT 
+	CASE WHEN "CircuitCriminalCase"."SentenceSuspended" IS NOT NULL
+		THEN ("CircuitCriminalCase"."SentenceTime" - "CircuitCriminalCase"."SentenceSuspended") 
+		ELSE "CircuitCriminalCase"."SentenceTime"
 	END AS "adjusted_sentence",
 	COUNT(*) AS "how_many"
 FROM "CircuitCriminalCase" 
