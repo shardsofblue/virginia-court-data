@@ -855,5 +855,340 @@ GROUP BY ROLLUP("Race", "trial_or_plea", "sentence_time")
 
 /* I just realized that earlier queries that filtered by DispositionCode = Guilty ignored other guilty-ish pleas like the one with probation in it. Meaningful? */
 
+SELECT *
+FROM "Temp2";
 
+DROP TABLE "Temp2";
+
+/* I need to account for Fairfax county being missing */
+/* Look into specific regions by fips code */
+
+/* I really need a table in which cases are grouped by individual. I need to figure out how to aggregate them automatically the way I did manually in Excel. Each defendent should have: 
++name
+-(offense date)
++dates filed
++year filed (spawn new name line if multiple)
++fips code where filed (spawn new name line if multiple)
++race (spawn new name line if multiple)
++count of charges
++charge codes
++charge descriptions
++plea/trial/etc (commencedby)
++disposition code (g/ng/etc)
++concurrent/consecutive
++LOGIC charge amended T/F
++amended charges code
++charge descriptions
++MATH summed sentence times
++LOGIC sentence suspended T/F
++MATH summed suspension times
++LOGIC/MATH summed adjusted sentence times
++life/death
+-(LOGIC/MATH summed adjusted sentence times including life as 99 years) see notes below query
+*/
+
+
+/* Beautiful AGGREGATE TABLE query */
+/* Beautiful AGGREGATE TABLE query */
+/* Beautiful AGGREGATE TABLE query */
+/* Beautiful AGGREGATE TABLE query */
+SELECT 
+	"CircuitCriminalCase"."Defendant", /* name */
+	EXTRACT(YEAR FROM "CircuitCriminalCase"."Filed") AS "Year_Filed", 
+	STRING_AGG(DISTINCT TO_CHAR("CircuitCriminalCase"."Filed",'DD-Mon-YYYY'), ', ') AS "Dates_Filed",
+	"CircuitCriminalCase"."fips" AS "Fips_Where_Filed",
+	"CircuitCriminalCase"."Race",
+	COUNT("CircuitCriminalCase"."CodeSection") AS "Num_Charges",
+	STRING_AGG("CircuitCriminalCase"."CodeSection", ', ') AS "Code_Sections", /* the codes of the charges */
+	STRING_AGG("CircuitCriminalCase"."Charge", ', ') AS "Charge_Descriptions", /* plain language of the charges as entered on the filing */
+	CASE WHEN STRING_AGG("CircuitCriminalCase"."AmendedCodeSection", ', ') IS NOT NULL /* checks whether a charge was amended */
+		THEN TRUE
+		ELSE FALSE
+	END AS "Was_Amended",
+	STRING_AGG("CircuitCriminalCase"."AmendedCodeSection", ', ') AS "Amended_Code_Sections", /* the codes of any amended charges */
+	STRING_AGG("CircuitCriminalCase"."AmendedCharge", ', ') AS "Am_Charge_Descriptions", /* plain language of the amended charges as entered on the filing */
+	STRING_AGG(DISTINCT "CircuitCriminalCase"."ConcludedBy", ', ') AS "Concluded_By", /* trial by judge, trial by jury, plea, etc. */
+	CASE WHEN "CircuitCriminalCase"."ConcludedBy" LIKE 'Trial%' /* combine trial types */
+		THEN 'Trial'
+		ELSE 'Plea'
+	END AS "Trial_or_Plea",
+	STRING_AGG(DISTINCT "CircuitCriminalCase"."DispositionCode", ', ') AS "Disposition_Code", /* guilty, not guilty, dismissed, etc. */
+	STRING_AGG(TO_CHAR("CircuitCriminalCase"."SentenceTime", '99999'), ', ') AS "Sentence_Times", /* outputs sentence times aggregated together as a text string */
+	SUM("CircuitCriminalCase"."SentenceTime") AS "Sentence_Time_Total",
+	CASE WHEN SUM("CircuitCriminalCase"."SentenceSuspended") > 0 /* checks whether any sentence times were suspended */
+		THEN TRUE
+		ELSE FALSE
+	END AS "Was_Suspended",
+	SUM("CircuitCriminalCase"."SentenceSuspended") AS "Suspended_Time_Total",
+	CASE WHEN SUM("CircuitCriminalCase"."SentenceSuspended") IS NOT NULL /* calculates time required to be served when considering any sentence suspensions */
+		THEN (SUM("CircuitCriminalCase"."SentenceTime") - SUM("CircuitCriminalCase"."SentenceSuspended")) 
+		ELSE SUM("CircuitCriminalCase"."SentenceTime")
+	END AS "Adjusted_Sentence",
+	STRING_AGG(DISTINCT "CircuitCriminalCase"."LifeDeath", ', ') AS "Life_Death", /* life sentences or death penalties */
+	CASE WHEN STRING_AGG("CircuitCriminalCase"."LifeDeath", ', ') LIKE '%Life%' /* true/false for life sentences; only checks whether the field is marked, does not know if sentence time adds up to a life sentence */
+		THEN TRUE
+		ELSE FALSE
+	END AS "Life_Sentence",	
+	STRING_AGG(DISTINCT "CircuitCriminalCase"."ConcurrentConsecutive", ', ') AS "How_Served" /* when noted, shows whether times are to be served consecutively or concurrently (not used consistently enough to be used as a means of calculating time required to be served) */
+INTO "Aggregate_Data"
+FROM "CircuitCriminalCase"
+WHERE 
+	"CircuitCriminalCase"."ChargeType" = 'Felony' /* felony */
+	AND "CircuitCriminalCase"."SentenceTime" is not null /* was sentenced to jail time */
+	AND ("CircuitCriminalCase"."ConcludedBy" = 'Guilty Plea' /* ended with a GUILTY PLEA */
+		OR "CircuitCriminalCase"."ConcludedBy" LIKE 'Trial%') /* ended with a TRIAL */
+	AND EXTRACT(YEAR FROM "CircuitCriminalCase"."Filed") BETWEEN 2007 AND 2017 /* for 10 years */
+GROUP BY "CircuitCriminalCase"."Defendant", "Year_Filed", "Fips_Where_Filed", "CircuitCriminalCase"."Race", "Trial_or_Plea"
+;
+/* End beautiful AGGREGATE TABLE query */
+/* End beautiful AGGREGATE TABLE query */
+/* End beautiful AGGREGATE TABLE query */
+/* End beautiful AGGREGATE TABLE query */
+
+DROP TABLE "Aggregate_Data";
+
+/* confirming no data for Fairfax county */
+SELECT *
+FROM "Aggregate_Data"
+WHERE "Aggregate_Data"."Fips_Where_Filed" = 59;
+
+/* adjusted sentence times counted as groups */
+SELECT 
+	CASE WHEN "Aggregate_Data"."Life_Death" LIKE 'Life%'
+		THEN 'G. life sentence'
+		WHEN "Aggregate_Data"."Life_Death" LIKE 'Death%'
+		THEN 'H. death penalty'
+		WHEN "Aggregate_Data"."Adjusted_Sentence" = 0 OR "Aggregate_Data"."Adjusted_Sentence" IS NULL
+		THEN 'A. none'
+		WHEN "Aggregate_Data"."Adjusted_Sentence" < 365
+		THEN 'B. less than 1 year'
+		WHEN "Aggregate_Data"."Adjusted_Sentence" < 1825
+		THEN 'C. between 1 and 5 years'
+		WHEN "Aggregate_Data"."Adjusted_Sentence" < 3650
+		THEN 'D. between 5 and 10 years'
+		WHEN "Aggregate_Data"."Adjusted_Sentence" < 14600
+		THEN 'E. between 10 and 40 years'
+		ELSE 'F. 40 years or more'
+	END AS "sentence_time",
+	COUNT(*) AS "how_many",
+	ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) 
+		FROM "Aggregate_Data"
+		WHERE "Aggregate_Data"."Fips_Where_Filed" = 69),2) AS "percent"
+FROM "Aggregate_Data" 
+WHERE "Aggregate_Data"."Fips_Where_Filed" = 69 
+GROUP BY ROLLUP("sentence_time");
+
+/* Four queries below (can be UNIONed together) show average adjusted sentence times served to black/white people at trial/plea in a given county */
+/* white people at trial in fips=69 Frederick */
+SELECT 
+	"Aggregate_Data"."Race",
+	"Aggregate_Data"."Trial_or_Plea",
+	CASE WHEN "Aggregate_Data"."Life_Death" LIKE 'Life%'
+		THEN 'G. life sentence'
+		WHEN "Aggregate_Data"."Life_Death" LIKE 'Death%'
+		THEN 'H. death penalty'
+		WHEN "Aggregate_Data"."Adjusted_Sentence" = 0 OR "Aggregate_Data"."Adjusted_Sentence" IS NULL
+		THEN 'A. none'
+		WHEN "Aggregate_Data"."Adjusted_Sentence" < 365
+		THEN 'B. less than 1 year'
+		WHEN "Aggregate_Data"."Adjusted_Sentence" < 1825
+		THEN 'C. between 1 and 5 years'
+		WHEN "Aggregate_Data"."Adjusted_Sentence" < 3650
+		THEN 'D. between 5 and 10 years'
+		WHEN "Aggregate_Data"."Adjusted_Sentence" < 14600
+		THEN 'E. between 10 and 40 years'
+		ELSE 'F. 40 years or more'
+	END AS "sentence_time",
+	COUNT(*) AS "how_many",
+	ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) 
+		FROM "Aggregate_Data"
+		WHERE "Aggregate_Data"."Fips_Where_Filed" = 69 
+			AND "Aggregate_Data"."Race" LIKE 'White%'
+			AND "Aggregate_Data"."Trial_or_Plea" = 'Trial'),2) AS "percent"
+FROM "Aggregate_Data" 
+WHERE "Aggregate_Data"."Fips_Where_Filed" = 69 
+	AND "Aggregate_Data"."Race" LIKE 'White%'
+	AND "Aggregate_Data"."Trial_or_Plea" = 'Trial'
+GROUP BY ROLLUP("Race", "Trial_or_Plea", "sentence_time")
+
+UNION ALL
+
+/* black people at trial in fips=69 Frederick */
+SELECT 
+	"Aggregate_Data"."Race",
+	"Aggregate_Data"."Trial_or_Plea",
+	CASE WHEN "Aggregate_Data"."Life_Death" LIKE 'Life%'
+		THEN 'G. life sentence'
+		WHEN "Aggregate_Data"."Life_Death" LIKE 'Death%'
+		THEN 'H. death penalty'
+		WHEN "Aggregate_Data"."Adjusted_Sentence" = 0 OR "Aggregate_Data"."Adjusted_Sentence" IS NULL
+		THEN 'A. none'
+		WHEN "Aggregate_Data"."Adjusted_Sentence" < 365
+		THEN 'B. less than 1 year'
+		WHEN "Aggregate_Data"."Adjusted_Sentence" < 1825
+		THEN 'C. between 1 and 5 years'
+		WHEN "Aggregate_Data"."Adjusted_Sentence" < 3650
+		THEN 'D. between 5 and 10 years'
+		WHEN "Aggregate_Data"."Adjusted_Sentence" < 14600
+		THEN 'E. between 10 and 40 years'
+		ELSE 'F. 40 years or more'
+	END AS "sentence_time",
+	COUNT(*) AS "how_many",
+	ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) 
+		FROM "Aggregate_Data"
+		WHERE "Aggregate_Data"."Fips_Where_Filed" = 69 
+			AND "Aggregate_Data"."Race" LIKE 'Black%'
+			AND "Aggregate_Data"."Trial_or_Plea" = 'Trial'),2) AS "percent"
+FROM "Aggregate_Data" 
+WHERE "Aggregate_Data"."Fips_Where_Filed" = 69 
+	AND "Aggregate_Data"."Race" LIKE 'Black%'
+	AND "Aggregate_Data"."Trial_or_Plea" = 'Trial'
+GROUP BY ROLLUP("Race", "Trial_or_Plea", "sentence_time")
+
+UNION ALL
+
+/* white people plea in fips=69 Frederick */
+SELECT 
+	"Aggregate_Data"."Race",
+	"Aggregate_Data"."Trial_or_Plea",
+	CASE WHEN "Aggregate_Data"."Life_Death" LIKE 'Life%'
+		THEN 'G. life sentence'
+		WHEN "Aggregate_Data"."Life_Death" LIKE 'Death%'
+		THEN 'H. death penalty'
+		WHEN "Aggregate_Data"."Adjusted_Sentence" = 0 OR "Aggregate_Data"."Adjusted_Sentence" IS NULL
+		THEN 'A. none'
+		WHEN "Aggregate_Data"."Adjusted_Sentence" < 365
+		THEN 'B. less than 1 year'
+		WHEN "Aggregate_Data"."Adjusted_Sentence" < 1825
+		THEN 'C. between 1 and 5 years'
+		WHEN "Aggregate_Data"."Adjusted_Sentence" < 3650
+		THEN 'D. between 5 and 10 years'
+		WHEN "Aggregate_Data"."Adjusted_Sentence" < 14600
+		THEN 'E. between 10 and 40 years'
+		ELSE 'F. 40 years or more'
+	END AS "sentence_time",
+	COUNT(*) AS "how_many",
+	ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) 
+		FROM "Aggregate_Data"
+		WHERE "Aggregate_Data"."Fips_Where_Filed" = 69 
+			AND "Aggregate_Data"."Race" LIKE 'White%'
+			AND "Aggregate_Data"."Trial_or_Plea" = 'Plea'),2) AS "percent"
+FROM "Aggregate_Data" 
+WHERE "Aggregate_Data"."Fips_Where_Filed" = 69 
+	AND "Aggregate_Data"."Race" LIKE 'White%'
+	AND "Aggregate_Data"."Trial_or_Plea" = 'Plea'
+GROUP BY ROLLUP("Race", "Trial_or_Plea", "sentence_time")
+
+UNION ALL
+
+/* black people plea in fips=69 Frederick */
+SELECT 
+	"Aggregate_Data"."Race",
+	"Aggregate_Data"."Trial_or_Plea",
+	CASE WHEN "Aggregate_Data"."Life_Death" LIKE 'Life%'
+		THEN 'G. life sentence'
+		WHEN "Aggregate_Data"."Life_Death" LIKE 'Death%'
+		THEN 'H. death penalty'
+		WHEN "Aggregate_Data"."Adjusted_Sentence" = 0 OR "Aggregate_Data"."Adjusted_Sentence" IS NULL
+		THEN 'A. none'
+		WHEN "Aggregate_Data"."Adjusted_Sentence" < 365
+		THEN 'B. less than 1 year'
+		WHEN "Aggregate_Data"."Adjusted_Sentence" < 1825
+		THEN 'C. between 1 and 5 years'
+		WHEN "Aggregate_Data"."Adjusted_Sentence" < 3650
+		THEN 'D. between 5 and 10 years'
+		WHEN "Aggregate_Data"."Adjusted_Sentence" < 14600
+		THEN 'E. between 10 and 40 years'
+		ELSE 'F. 40 years or more'
+	END AS "sentence_time",
+	COUNT(*) AS "how_many",
+	ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) 
+		FROM "Aggregate_Data"
+		WHERE "Aggregate_Data"."Fips_Where_Filed" = 69 
+			AND "Aggregate_Data"."Race" LIKE 'Black%'
+			AND "Aggregate_Data"."Trial_or_Plea" = 'Plea'),2) AS "percent"
+FROM "Aggregate_Data" 
+WHERE "Aggregate_Data"."Fips_Where_Filed" = 69 
+	AND "Aggregate_Data"."Race" LIKE 'Black%'
+	AND "Aggregate_Data"."Trial_or_Plea" = 'Plea'
+GROUP BY ROLLUP("Race", "Trial_or_Plea", "sentence_time")
+;
+
+/* What percentage of the total defendents pled guilty or went to trial? */
+SELECT 
+	"Aggregate_Data"."Trial_or_Plea",
+	COUNT(*),
+	ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*)
+		FROM "Aggregate_Data"), 2) AS "percent"
+FROM "Aggregate_Data"
+GROUP BY "Aggregate_Data"."Trial_or_Plea";
+
+/*
+
+*/
+
+/* FINDING OF INTEREST: X% of those convicted took plea deals. */
+
+/* COUNT and PERCENT of which RACE went to trial or pled guilty and was found guilty, 
+percent of TOTAL */
+SELECT "Aggregate_Data"."Race",
+	"Aggregate_Data"."Trial_or_Plea",
+	COUNT(*),
+	ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) 
+		FROM "Aggregate_Data"),2) as percent
+FROM "Aggregate_Data"
+GROUP BY ROLLUP("Aggregate_Data"."Race", "Aggregate_Data"."Trial_or_Plea");
+
+/*
+
+*/
+
+/*
+Census beaureu:
+https://www.census.gov/quickfacts/va
+https://www.census.gov/programs-surveys/decennial-census/data/tables.2010.html
+
+Race and Hispanic Origin	
+White alone, percent(a)	69.7%
+Black or African American alone, percent(a) 19.8%
+American Indian and Alaska Native alone, percent(a) 0.5%
+Asian alone, percent(a)	6.8%
+Native Hawaiian and Other Pacific Islander alone, percent(a) 0.1%
+Two or More Races, percent	3.0%
+Hispanic or Latino, percent(b)	9.4%
+White alone, not Hispanic or Latino, percent 61.9%
+*/
+
+/*  
+FINDING OF INTEREST: Black people make up X percent of the convictions in VA, while only making up 20 percent of the population. By contrast, white people make up 70 percent of the population and X percent of the convictions. HOWEVER this data NEEDS REVISION, because the census data includes fips=59 while the case data does not.
+*/
+
+/* What percentage of each race (black/white) pled guilty or went to trial? */
+SELECT "Aggregate_Data"."Race",
+	"Aggregate_Data"."Trial_or_Plea",
+	COUNT(*),
+	ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*)
+		FROM "Aggregate_Data"
+		WHERE "Aggregate_Data"."Race" LIKE 'White%'), 2) AS "percent"
+FROM "Aggregate_Data"
+WHERE "Aggregate_Data"."Race" LIKE 'White%'
+GROUP BY "Aggregate_Data"."Race", "Aggregate_Data"."Trial_or_Plea"
+
+UNION ALL 
+
+SELECT "Aggregate_Data"."Race",
+	"Aggregate_Data"."Trial_or_Plea",
+	COUNT(*),
+	ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*)
+		FROM "Aggregate_Data"
+		WHERE "Aggregate_Data"."Race" LIKE 'Black%'), 2) AS "percent"
+FROM "Aggregate_Data"
+WHERE "Aggregate_Data"."Race" LIKE 'Black%'
+GROUP BY "Aggregate_Data"."Race", "Aggregate_Data"."Trial_or_Plea"
+;
+/*
+
+*/
+
+/* FINDING OF INTEREST: More white people (X%) chose a plea deal than black people did (X%).
 
