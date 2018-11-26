@@ -865,6 +865,7 @@ DROP TABLE "Temp2";
 
 /* I really need a table in which cases are grouped by individual. I need to figure out how to aggregate them automatically the way I did manually in Excel. Each defendent should have: 
 +name
+-case numbers
 -(offense date)
 +dates filed
 +year filed (spawn new name line if multiple)
@@ -893,6 +894,7 @@ DROP TABLE "Temp2";
 /* Beautiful AGGREGATE TABLE query */
 /* Beautiful AGGREGATE TABLE query */
 SELECT 
+	STRING_AGG("CircuitCriminalCase"."CaseNumber", ', ') AS "Case_Numbers", /* the case numbers */
 	"CircuitCriminalCase"."Defendant", /* name */
 	EXTRACT(YEAR FROM "CircuitCriminalCase"."Filed") AS "Year_Filed", 
 	STRING_AGG(DISTINCT TO_CHAR("CircuitCriminalCase"."Filed",'DD-Mon-YYYY'), ', ') AS "Dates_Filed",
@@ -947,12 +949,18 @@ GROUP BY "CircuitCriminalCase"."Defendant", "Year_Filed", "Fips_Where_Filed", "C
 
 DROP TABLE "Aggregate_Data";
 
+SELECT *
+FROM "Aggregate_Data";
+
+COPY "Aggregate_Data" TO 'C:\tmp\persons_db.csv' DELIMITER ';' CSV HEADER;
+
 /* confirming no data for Fairfax county */
 SELECT *
 FROM "Aggregate_Data"
-WHERE "Aggregate_Data"."Fips_Where_Filed" = 59;
+WHERE "Aggregate_Data"."Fips_Where_Filed" = 59; /* Fairfax */
 
 /* adjusted sentence times counted as groups */
+/* All fips, all times 2007-2013 */
 SELECT 
 	CASE WHEN "Aggregate_Data"."Life_Death" LIKE 'Life%'
 		THEN 'G. life sentence'
@@ -972,10 +980,8 @@ SELECT
 	END AS "sentence_time",
 	COUNT(*) AS "how_many",
 	ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) 
-		FROM "Aggregate_Data"
-		WHERE "Aggregate_Data"."Fips_Where_Filed" = 69),2) AS "percent"
+		FROM "Aggregate_Data"),2) AS "percent"
 FROM "Aggregate_Data" 
-WHERE "Aggregate_Data"."Fips_Where_Filed" = 69 
 GROUP BY ROLLUP("sentence_time");
 
 /* Four queries below (can be UNIONed together) show average adjusted sentence times served to black/white people at trial/plea in a given county */

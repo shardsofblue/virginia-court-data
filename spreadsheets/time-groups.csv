@@ -1,0 +1,34 @@
+Race	Trial_or_Plea	sentence_time	how_many	percent
+White Caucasian (Non-Hispanic)	Trial	A. none	10	12.66
+White Caucasian (Non-Hispanic)	Trial	B. less than 1 year	32	40.51
+White Caucasian (Non-Hispanic)	Trial	C. between 1 and 5 years	26	32.91
+White Caucasian (Non-Hispanic)	Trial	D. between 5 and 10 years	4	5.06
+White Caucasian (Non-Hispanic)	Trial	E. between 10 and 40 years	6	7.59
+White Caucasian (Non-Hispanic)	Trial	F. 40 years or more	1	1.27
+White Caucasian (Non-Hispanic)	Trial	NULL	79	100
+White Caucasian (Non-Hispanic)	NULL	NULL	79	100
+NULL	NULL	NULL	79	100
+Black (Non-Hispanic)	Trial	A. none	2	13.33
+Black (Non-Hispanic)	Trial	B. less than 1 year	4	26.67
+Black (Non-Hispanic)	Trial	C. between 1 and 5 years	8	53.33
+Black (Non-Hispanic)	Trial	D. between 5 and 10 years	1	6.67
+Black (Non-Hispanic)	Trial	NULL	15	100
+Black (Non-Hispanic)	NULL	NULL	15	100
+NULL	NULL	NULL	15	100
+White Caucasian (Non-Hispanic)	Plea	A. none	993	24.34
+White Caucasian (Non-Hispanic)	Plea	B. less than 1 year	1539	37.73
+White Caucasian (Non-Hispanic)	Plea	C. between 1 and 5 years	1394	34.18
+White Caucasian (Non-Hispanic)	Plea	D. between 5 and 10 years	112	2.75
+White Caucasian (Non-Hispanic)	Plea	E. between 10 and 40 years	39	0.96
+White Caucasian (Non-Hispanic)	Plea	F. 40 years or more	2	0.05
+White Caucasian (Non-Hispanic)	Plea	NULL	4079	100
+White Caucasian (Non-Hispanic)	NULL	NULL	4079	100
+NULL	NULL	NULL	4079	100
+Black (Non-Hispanic)	Plea	A. none	102	17.74
+Black (Non-Hispanic)	Plea	B. less than 1 year	213	37.04
+Black (Non-Hispanic)	Plea	C. between 1 and 5 years	217	37.74
+Black (Non-Hispanic)	Plea	D. between 5 and 10 years	24	4.17
+Black (Non-Hispanic)	Plea	E. between 10 and 40 years	19	3.3
+Black (Non-Hispanic)	Plea	NULL	575	100
+Black (Non-Hispanic)	NULL	NULL	575	100
+NULL	NULL	NULL	575	100
