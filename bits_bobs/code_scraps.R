@@ -1,5 +1,16 @@
 # Code scraps
 
+#brew install freetds --with-unixodbc
+#brew install psqlodbc
+#brew install mysql
+#brew install sqliteodbc
+#install.packages("odbc")
+
+# How to write a function
+function_name <- function(var1, var2="default value"){
+  #do stuff, passing var1 and var2 as needed
+}
+
 ## Connecting to the remote DB ##
 # Connect to the remote DB
 con <- DBI::dbConnect(odbc::odbc(),
@@ -54,3 +65,15 @@ ggplot(data=aggregate_data_table, aes(aggregate_data_table$Adjusted_Sentence)) +
 #+ scale_fill_gradient("Count", low="green", high="red")
 #+ xlim(c(18,52)) 
 #+ ylim(c(0,30))
+
+# layered histograms
+ggplot(guilty_plea_cases_grayson, aes(Adjusted_Sentence, fill=Race)) + 
+  geom_histogram(breaks=seq(0, 10000, by=365),
+                 aes(y = ..density..),
+                 position = 'identity', 
+                 alpha = .5) + 
+  labs(title="Histogram for Sentence", x="Sentence", y="Count")
+
+# density curves
+ggplot(guilty_plea_cases_grayson, aes(Adjusted_Sentence, fill = Race)) + 
+  geom_density(alpha = 0.2)
