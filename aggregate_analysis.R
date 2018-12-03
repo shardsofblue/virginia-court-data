@@ -24,13 +24,13 @@ fips_data_table <- read.csv(file="/Volumes/TOSHIBA_EXT/UMD/Data\ Journalism/Data
 # Filter the data set for only guilty
 guilty_cases <- aggregate_data_table %>%
   filter(Disposition_Code == "Guilty")
-#View(guilty_plea_cases)
+#View(guilty_cases)
 
 # Filter the data set for only guilty and black and white races
 guilty_blackwhite_cases <- aggregate_data_table %>%
   filter(Disposition_Code == "Guilty") %>%
   filter(Race == "Black (Non-Hispanic)" | Race == "White Caucasian (Non-Hispanic)")
-#View(plea_blackwhite_cases)
+#View(guilty_blackwhite_cases)
 
 # Add a column of logs of ag sentence times
 guilty_bw_logs <- guilty_blackwhite_cases
@@ -41,7 +41,7 @@ guilty_bw_logs$log_adjusted_sentence <- log10(guilty_blackwhite_cases$Adjusted_S
 ## FUNCTIONS ##
 ###############
 
-# Create histograms
+# Create a histogram
 histo_maker <- function(loc_name, table, measure, compare){
   output <- ggplot(table, aes(measure, fill=compare)) +
     background_grid(major = 'y', minor = "x") + 
@@ -67,7 +67,7 @@ fips_filter <- function(table, fips){
 #test_table <- fips_filter(guilty_blackwhite_cases, 77)
 #View(test_table)
 
-#Create histogram for a single circuit court by fips
+# Create histogram for a single circuit court by fips
 race_hist <- function(loc_fips, starting_df){
   loc_by_race <- fips_filter(starting_df, loc_fips)
   output <- histo_maker(loc_fips, loc_by_race, loc_by_race$Adjusted_Sentence, loc_by_race$Race)
@@ -78,7 +78,7 @@ race_hist <- function(loc_fips, starting_df){
 #ggsave("test.png", plot=test, path="/Volumes/TOSHIBA_EXT/UMD/Data\ Journalism/Data_Analysis_Project/virginia-court-data/bits_bobs/test_outputs")
 
 # Create and save histograms for adjusted sentence times for each circuit court by fips
-mass_hist <- function(starting_df){
+mass_hist_adjsent <- function(starting_df){
   fips_df <- fips_data_table
   for(i in 1:nrow(fips_df)) { #loop through fips codes
     loc_fips <- fips_df[i,1]
@@ -90,17 +90,17 @@ mass_hist <- function(starting_df){
     histo_i <- histo_maker(loc_name, table_i, table_i$Adjusted_Sentence, table_i$Race) #make a histograph for each fips code
     
     save_name <- paste("histo_",loc_fips,".png",sep="") #specificy a save name, then save it
-    ggsave(save_name, histo_i, path="/Volumes/TOSHIBA_EXT/UMD/Data\ Journalism/Data_Analysis_Project/virginia-court-data/bits_bobs/test_outputs")
+    ggsave(save_name, histo_i, path="/Volumes/TOSHIBA_EXT/UMD/Data\ Journalism/Data_Analysis_Project/virginia-court-data/bits_bobs/histograms")
   }
 }
-mass_hist(guilty_blackwhite_cases)
 
 ##############
 ## Overview ##
 ##############
 
 # Summarize aggregate_data_table
-summary(aggregate_data_table)
+summary_df <- summary(aggregate_data_table)
+View(summary_df)
 
 # histogram for guilty plea cases' sentence times
 ggplot(data=guilty_cases, aes(guilty_cases$Sentence_Time_Total)) + 
@@ -122,86 +122,50 @@ ggplot(data=guilty_cases, aes(guilty_cases$Adjusted_Sentence)) +
 ## Racial histogram analyses by county ##
 #########################################
 
-## Grayson County (red)
-hist_grayson_adjusted <- race_hist(77,guilty_blackwhite_cases)
-#hist_grayson_adjusted
+# Automated creation of histograms for sentence time
+mass_hist_adjsent(guilty_blackwhite_cases)
 
-## Chesapeake county (blue)
-hist_chesapeake_adjusted <- race_hist(550,guilty_blackwhite_cases)
-#hist_chesapeake_adjusted
+# group by fips and race and get averages
+#SELECT average(guilty_blackwhite_cases.Adjusted_Sentence)
+#GROUP BY Race, fips WITH ROLLUP
 
-## Washington county (red)
-hist_washington_adjusted <- race_hist(191,guilty_blackwhite_cases)
-#hist_washington_adjusted
+by_fips <- guilty_blackwhite_cases %>% group_by(Race, Fips_Where_Filed)
+mean_sent_by_racefips <- by_fips %>% summarise(
+  mean_adjusted_sentence = mean(Adjusted_Sentence)
+)
+View(mean_sent_by_racefips)
 
-## Prince William county (blue)
-hist_pwill_adjusted <- race_hist(153,guilty_blackwhite_cases)
-#hist_pwill_adjusted
+# Averages by race within a single fips
+fips77 <- fips_filter(mean_sent_by_racefips, 77)
+View(fips77)
 
-## Franklin county (red)
-hist_franklin_adjusted <- race_hist(67,guilty_blackwhite_cases)
-#hist_franklin_adjusted
+# Plot all fips on the same chart
+# compare differences between black and white average sentences
 
-## Montgomery (blue)
-hist_montgomery_adjusted <- race_hist(121,guilty_blackwhite_cases)
-#hist_montgomery_adjusted
+# compute differences b/w b&w average sentences
+# for each fips, substract avg_sent if(black) from avg_sent if(white), store
+fips77_dif <- fips77
 
-# View all adjusted side by side
-plot_grid(hist_grayson_adjusted, hist_chesapeake_adjusted, hist_washington_adjusted, hist_pwill_adjusted, hist_franklin_adjusted, hist_montgomery_adjusted, labels = "AUTO")
+# I made a table storing the mean avgerage sentence time grouped by fips and race (only black and white). I want to look at each fips and subtract the average for each race, then store that difference as a value associated with each fips. 
 
-#####################################################
-## Logarithmic racial histogram analyses by county ##
-#####################################################
+#The table looks something like this:
+# Race | fips | mean
+# Black | 77 | 20
+# White | 77 | 19
+# Black | 105 | 55
+# White | 105 | 21
 
-## Grayson County (red)
-grayson_by_racelog <- fips_filter(guilty_bw_logs, 77)
-#View(grayson_by_racelog)
-
-# Grayson: Adjusted sentence times
-dense_grayson_adjustedlog <- ggplot(grayson_by_racelog, aes(log_adjusted_sentence, fill = Race)) + 
-  geom_density(alpha = 0.2)
-
-
-## Chesapeake county (blue)
-chesapeake_by_racelog <- fips_filter(guilty_bw_logs, 550)
-#View(chesapeake_by_racelog)
-
-# Chesapeake: Adjusted sentence times
-dense_chesapeake_adjustedlog <- ggplot(chesapeake_by_racelog, aes(log_adjusted_sentence, fill = Race)) + 
-  geom_density(alpha = 0.2)
+# I want to get something like this:
+# fips | dif
+# 77 | 1
+# 105 | 34
 
 
-## Washington county (red)
-wash_by_racelog <- fips_filter(guilty_bw_logs, 191)
 
-# Washington: Adjusted sentence times
-dense_wash_adjustedlog <- ggplot(wash_by_racelog, aes(log_adjusted_sentence, fill = Race)) + 
-  geom_density(alpha = 0.2)
+#ggplot (data = <DATA> ) + geom_point(), x, y, alpha, color, fill, shape, size, stroke
+#black and white people different colors
+point_graph <- ggplot (data = mean_sent_by_racefips, aes(mean_adjusted_sentence, fill=Race)) + 
+  geom_histogram()
+point_graph
 
-
-## Prince William county (blue)
-pw_by_racelog <- fips_filter(guilty_bw_logs, 191)
-
-# Prince William: Adjusted sentence times
-dense_pw_adjustedlog <- ggplot(pw_by_racelog, aes(log_adjusted_sentence, fill = Race)) + 
-  geom_density(alpha = 0.2)
-
-
-## Franklin county (red)
-franklin_by_racelog <- fips_filter(guilty_bw_logs, 67)
-
-# Franklin: Adjusted sentence times
-dense_franklin_adjustedlog <- ggplot(franklin_by_racelog, aes(log_adjusted_sentence, fill = Race)) + 
-  geom_density(alpha = 0.2)
-
-
-## Montgomery (blue)
-montgomery_by_racelog <- fips_filter(guilty_bw_logs, 121)
-
-# Montgomery: Adjusted sentence times
-dense_montgomery_adjustedlog <- ggplot(montgomery_by_racelog, aes(log_adjusted_sentence, fill = Race)) + 
-  geom_density(alpha = 0.2)
-
-
-plot_grid(dense_grayson_adjustedlog, dense_chesapeake_adjustedlog, dense_wash_adjustedlog, dense_pw_adjustedlog, dense_franklin_adjustedlog, dense_montgomery_adjustedlog, labels = "AUTO")
 

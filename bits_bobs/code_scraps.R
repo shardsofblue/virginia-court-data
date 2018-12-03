@@ -113,3 +113,96 @@ mass_hist_single <- function(starting_df){
   storage_list[[1]]
 }
 mass_hist_single(guilty_blackwhite_cases)
+
+
+# individual histos by fips
+#########################################
+## Racial histogram analyses by county ##
+#########################################
+
+# Automated creation of histograms for sentence time
+mass_hist_adjsent(guilty_blackwhite_cases)
+
+
+## Grayson County (red)
+hist_grayson_adjusted <- race_hist(77,guilty_blackwhite_cases)
+#hist_grayson_adjusted
+
+## Chesapeake county (blue)
+hist_chesapeake_adjusted <- race_hist(550,guilty_blackwhite_cases)
+#hist_chesapeake_adjusted
+
+## Washington county (red)
+hist_washington_adjusted <- race_hist(191,guilty_blackwhite_cases)
+#hist_washington_adjusted
+
+## Prince William county (blue)
+hist_pwill_adjusted <- race_hist(153,guilty_blackwhite_cases)
+#hist_pwill_adjusted
+
+## Franklin county (red)
+hist_franklin_adjusted <- race_hist(67,guilty_blackwhite_cases)
+#hist_franklin_adjusted
+
+## Montgomery (blue)
+hist_montgomery_adjusted <- race_hist(121,guilty_blackwhite_cases)
+#hist_montgomery_adjusted
+
+# View all adjusted side by side
+plot_grid(hist_grayson_adjusted, hist_chesapeake_adjusted, hist_washington_adjusted, hist_pwill_adjusted, hist_franklin_adjusted, hist_montgomery_adjusted, labels = "AUTO")
+
+#####################################################
+## Logarithmic racial histogram analyses by county ##
+#####################################################
+
+## Grayson County (red)
+grayson_by_racelog <- fips_filter(guilty_bw_logs, 77)
+#View(grayson_by_racelog)
+
+# Grayson: Adjusted sentence times
+dense_grayson_adjustedlog <- ggplot(grayson_by_racelog, aes(log_adjusted_sentence, fill = Race)) + 
+  geom_density(alpha = 0.2)
+
+
+## Chesapeake county (blue)
+chesapeake_by_racelog <- fips_filter(guilty_bw_logs, 550)
+#View(chesapeake_by_racelog)
+
+# Chesapeake: Adjusted sentence times
+dense_chesapeake_adjustedlog <- ggplot(chesapeake_by_racelog, aes(log_adjusted_sentence, fill = Race)) + 
+  geom_density(alpha = 0.2)
+
+
+## Washington county (red)
+wash_by_racelog <- fips_filter(guilty_bw_logs, 191)
+
+# Washington: Adjusted sentence times
+dense_wash_adjustedlog <- ggplot(wash_by_racelog, aes(log_adjusted_sentence, fill = Race)) + 
+  geom_density(alpha = 0.2)
+
+
+## Prince William county (blue)
+pw_by_racelog <- fips_filter(guilty_bw_logs, 191)
+
+# Prince William: Adjusted sentence times
+dense_pw_adjustedlog <- ggplot(pw_by_racelog, aes(log_adjusted_sentence, fill = Race)) + 
+  geom_density(alpha = 0.2)
+
+
+## Franklin county (red)
+franklin_by_racelog <- fips_filter(guilty_bw_logs, 67)
+
+# Franklin: Adjusted sentence times
+dense_franklin_adjustedlog <- ggplot(franklin_by_racelog, aes(log_adjusted_sentence, fill = Race)) + 
+  geom_density(alpha = 0.2)
+
+
+## Montgomery (blue)
+montgomery_by_racelog <- fips_filter(guilty_bw_logs, 121)
+
+# Montgomery: Adjusted sentence times
+dense_montgomery_adjustedlog <- ggplot(montgomery_by_racelog, aes(log_adjusted_sentence, fill = Race)) + 
+  geom_density(alpha = 0.2)
+
+
+plot_grid(dense_grayson_adjustedlog, dense_chesapeake_adjustedlog, dense_wash_adjustedlog, dense_pw_adjustedlog, dense_franklin_adjustedlog, dense_montgomery_adjustedlog, labels = "AUTO")
