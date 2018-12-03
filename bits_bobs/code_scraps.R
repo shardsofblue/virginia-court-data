@@ -77,3 +77,39 @@ ggplot(guilty_plea_cases_grayson, aes(Adjusted_Sentence, fill=Race)) +
 # density curves
 ggplot(guilty_plea_cases_grayson, aes(Adjusted_Sentence, fill = Race)) + 
   geom_density(alpha = 0.2)
+
+# Cycle through fips and print out the associated circuit court
+fips_cycle <- function(table){
+  #seq <- c(1:10)
+  #for(i in seq) {
+  for(i in 1:nrow(table)) {
+    court_name <- table[i, 2]
+    court_fips <- table[i,1]
+    print(paste("The fips for", court_name, "is", court_fips, sep=" "))
+  }
+}
+#fips_cycle(fips_data_table)
+
+# Create histograms for each circuit court by fips, combine into single image, save
+#unfinished, errors out
+mass_hist_single <- function(starting_df){
+  fips_df <- fips_data_table #define fips dataframe
+  storage_list <- list() #initialize a list
+  
+  for(i in 1:nrow(fips_df)) { #loop through fips codes
+    loc_fips <- fips_df[i,1]
+    loc_name <- fips_df[i,2]
+    
+    table_i <- starting_df %>% #create a dataframe for the fips
+      filter(Fips_Where_Filed == loc_fips)
+    
+    histo_i <- histo_maker(loc_name, table_i, table_i$Sentence_Time_Total, table_i$Race) #make a histograph for the fips code
+    
+    plot_grid(labels="AUTO")
+    
+    storage_list[[i]] <- histo_i #store the histograph in the list
+  }
+  #View(storage_list)
+  storage_list[[1]]
+}
+mass_hist_single(guilty_blackwhite_cases)
