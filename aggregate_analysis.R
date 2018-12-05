@@ -175,7 +175,7 @@ county_summary <- mutate(county_summary, total_cases=black_num_cases + white_num
 
 #add a column for percentage of cases black
 county_summary <- mutate(county_summary, perc_black = round(((black_num_cases/total_cases)*100),2) )
-View(county_summary)
+#View(county_summary)
 
 #determine mean of the total sentence times before adjustment
 mean_sent_by_racefips_t <- guilty_blackwhite_cases %>%
@@ -190,7 +190,7 @@ mean_sent_by_racefips_t <- mean_sent_by_racefips_t %>%
 mean_sent_by_racefips_t <- mean_sent_by_racefips_t %>%mutate(diff_total = black_avg_sent_times_t - white_avg_sent_times_t, # for each fips, substract avg_sent if(black) from avg_sent if(white)
          diff_total_perc = round(((diff_total/black_avg_sent_times_t)*100),2) #value for black and white calculated as a percentage of black sent times
   )
-View(mean_sent_by_racefips_t)
+#View(mean_sent_by_racefips_t)
 
 
 county_summary <- inner_join(county_summary, mean_sent_by_racefips_t, by=c("Fips_Where_Filed"))
