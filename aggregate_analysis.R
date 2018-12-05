@@ -212,6 +212,7 @@ View(summary(county_summary))
 # Look at only counties where at least 50 black people were charged, to reduce the swing caused by any individual case
 county_summary_filtered <- county_summary %>%
   filter(black_num_cases >= 250 & white_num_cases >= 250 & total_cases >= 1000) 
+#View(county_summary_filtered)
 
 #for messing with charts without breaking things
 csf_charted <- county_summary_filtered
@@ -221,6 +222,20 @@ csf_charted$name <- str_replace(csf_charted$name, " Circuit Court", "")
 
 # Starting universe: Guilty, black/white, 1,000 or more cases total, 25% or more are black/white
 # print(nrow(csf_charted)) #67 counties
+
+onlygreater <- filter(csf_charted,diff >0)
+#print(nrow(onlygreater)) #56
+
+onlylesser <- filter(csf_charted,diff <=0)
+#print(nrow(onlylesser)) #11
+
+##########################################
+## Repeat but with added year breakdown ##
+##########################################
+
+# would like to see how disparity has changed over time. This means repeating the above to further break out the groups by race and adding difference to each year
+#mean_sent_by_racefipsyear <- #stuff#
+  #View(mean_sent_by_racefipsyear)
 
 ##########################
 ## Adjusted Days (Real) ##
@@ -237,8 +252,9 @@ chart1 <- ggplot(csf_charted, aes(x=reorder(name,-diff), diff)) +
     major = c("xy"), minor = c("y"),
     size.major = 0.5, size.minor = 0.0, 
     colour.major = "gray60", colour.minor = "gray42") + 
+  theme_gray() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1), legend.position="none")
-chart
+chart1
 
 ggsave("adjusted_real_diff.png", chart1, path="bits_bobs/bar_graphs")
 
@@ -257,40 +273,81 @@ chart2 <- ggplot(csf_charted, aes(x=reorder(name,-diff_perc), diff_perc)) +
     major = c("xy"), minor = c("y"),
     size.major = 0.5, size.minor = 0.0, 
     colour.major = "gray60", colour.minor = "gray42") + 
+  theme_gray() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1), legend.position="none")
 chart2
 
 ggsave("adjusted_percent_diff.png", chart2, path="bits_bobs/bar_graphs")
 
-#[DONE]beautify chart axis labels
-#[DONE]run same chart by percentage
-#[DONE]identify problem counties
-##REAL DAYS         ##PERC
-  #1.Southampton*     ##Richmond City*
-  #2.Fauquier*        ##Southampton*
-  #3.Bristol*         ##Salem
-  #4.Richmond City*   ##Alleghany^
-  #5.Dinwiddie*       ##Norfolk^
-  #6.Norfolk^         ##Britol*
-  #7.Alleghany^       ##Pulaski
-  #8.Lynchburg        ##Fauquier*
-  #9.Newport News     ##Dinwiddie*
-  #10.Virginia Beach  ##York/Poquoson
-
-#look into other factors of individual counties 
-##date trends
-##crime type
-##run a check on nat lang field (Charge_Descriptions) or Code_Sections as first pass on crime types?
-
-#b/w found guilty/ng
-##demographics compared to census b.
-
-#Out of project scope
-##clean crime types
-##look into specific cases
-##interview relevavant officials
+#######################
+## County Drill-down ##
+#######################
 
 # What did the people in the top disparate counties do?
-View(fips_filter(aggregate_data_table, 105)) #Lee, one outlier skewed the data
 View(fips_filter(aggregate_data_table, 760)) #Richmond, just more than a year
-View(fips_filter(aggregate_data_table, 169)) #Scott
+View(fips_filter(aggregate_data_table, 175)) #Scott
+
+# Dataframe holding all info for the top 5 worst-offenders
+top_5_all <- guilty_blackwhite_cases %>%
+  filter(Fips_Where_Filed == 175 | Fips_Where_Filed == 61 | Fips_Where_Filed == 520 | Fips_Where_Filed == 760 | Fips_Where_Filed == 53)
+#View(top_5_all) #25,229 cases
+
+# Dataframe holding grouped data for the top 5 worst-offenders
+top_5_grouped <- county_summary_filtered %>%
+  filter(Fips_Where_Filed == 175 | Fips_Where_Filed == 61 | Fips_Where_Filed == 520 | Fips_Where_Filed == 760 | Fips_Where_Filed == 53)
+#View(top_5_grouped)
+
+# Count the number of cases in each county in each year
+grouped_by_year <- top_5_all %>%
+  group_by(Fips_Where_Filed, Year_Filed) %>%
+  summarise(num_cases = n(),
+            avg_init_time = mean(Sentence_Time_Total),
+            avg_adj_time = mean(Adjusted_Sentence))
+#View(grouped_by_year)
+
+# Join county names info
+grouped_by_year <- grouped_by_year %>%
+  inner_join(fips_data_table,by=c("Fips_Where_Filed"="fips"))  # add the name of the location by fips
+setnames(grouped_by_year,old=c("name"), new=c("County")) # give columns meaningful names
+grouped_by_year$County <- str_replace(grouped_by_year$County, " Circuit Court", "") # trim off repetitive naming
+grouped_by_year$County <- factor(grouped_by_year$County) # make counties distinct
+grouped_by_year$Year_Filed <- factor(grouped_by_year$Year_Filed) # make years distinct
+
+##########################
+## Time Series Analysis ##
+##########################
+
+# Plot number of cases by fips/year
+i1 <- grouped_by_year %>%
+  ggplot(aes(x = Year_Filed, 
+             y = num_cases,
+             group = County,
+             colour = County,
+             label = County)) +
+  geom_line(stat = "identity") +
+  ggtitle("Number of Guilty Cases") +
+  xlab("Year") +
+  ylab("Number") +
+  theme_gray() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+i1
+
+# Plot sentence times by fips/year
+i2 <- grouped_by_year %>%
+  ggplot(aes(x = Year_Filed, 
+             y = avg_adj_time,
+             group = County,
+             colour = County,
+             label = County)) +
+  geom_line(stat = "identity") +
+  ggtitle("Average Sentence Times") +
+  xlab("Year") +
+  ylab("Days Sentenced") +
+  theme_gray() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+i2
+
+
+# Plot sentence times by race/fips/year (Line 232)
+
+

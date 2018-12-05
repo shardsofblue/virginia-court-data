@@ -1,3 +1,6 @@
+# Data Analysis Project Memo
+
+## Project Requirements
 * A strong statement at the top. 
   * Tell me right up front what you found that was interesting or what you found that suggests a dynamite story. 
   * Tell me how your most newsworthy findings relate to what you found in your research about prior uses of similar data for stories elsewhere.
@@ -21,7 +24,7 @@ Across Virginia from 2007-2017, black people were sentenced to about a half year
 
 Fifty-six of the 67 counties studied showed black people serving longer sentences than white. Southhampton was one of the worst offenders, with black people spending an average of 1.5 years longer behind bars. 
 
-Of the remaining 11 counties, the greatest swing in the other direction — where white people spent longer in prison than black — was in Bedford at about one year.
+Of the remaining 11 counties, the greatest swing in the other direction — where white people spent longer in prison than black — was in Bedford, at about one year.
 
 This analysis looked at sentence times for black and white people found guilty of a crime, adjusted for sentence suspensions. It also only considered counties with at least 1,000 of such cases and a 25 percent minimum percentage of cases in each of the two racial categories.
 
