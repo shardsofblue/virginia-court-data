@@ -4,11 +4,13 @@ install.packages('stringr')
 install.packages('lubridate')
 install.packages('gridExtra')
 install.packages('cowplot')
+install.packages('data.table')
 library(tidyverse)
 library(stringr)
 library(lubridate)
 library(gridExtra)
 library(cowplot)
+library(data.table)
 theme_set(theme_cowplot(font_size=10)) # reduce default font size on charts
 
 ###############
@@ -20,6 +22,9 @@ aggregate_data_table <- read.csv(file="/Volumes/TOSHIBA_EXT/UMD/Data\ Journalism
 
 # Load in the fips code data CSV
 fips_data_table <- read.csv(file="/Volumes/TOSHIBA_EXT/UMD/Data\ Journalism/Data_Analysis_Project/virginia-court-data/data/circuit_courts_fips.csv",head=TRUE,sep=",")
+
+# Load in demographic data CSV from 2017 census
+demographic_data_table <- read.csv(file="/Volumes/TOSHIBA_EXT/UMD/Data\ Journalism/Data_Analysis_Project/virginia-court-data/data/census_data/PEP_2017_PEPSR5H_with_ann.csv",head=TRUE,sep=",")
 
 # Filter the data set for only guilty
 guilty_cases <- aggregate_data_table %>%
@@ -129,43 +134,76 @@ mass_hist_adjsent(guilty_blackwhite_cases)
 #SELECT average(guilty_blackwhite_cases.Adjusted_Sentence)
 #GROUP BY Race, fips WITH ROLLUP
 
-by_fips <- guilty_blackwhite_cases %>% group_by(Race, Fips_Where_Filed)
-mean_sent_by_racefips <- by_fips %>% summarise(
-  mean_adjusted_sentence = mean(Adjusted_Sentence)
-)
-View(mean_sent_by_racefips)
+mean_sent_by_racefips <- guilty_blackwhite_cases %>%
+  group_by(Race, Fips_Where_Filed) %>%
+  summarise(mean_adjusted_sentence = mean(Adjusted_Sentence))
+#View(mean_sent_by_racefips)
 
 # Averages by race within a single fips
 fips77 <- fips_filter(mean_sent_by_racefips, 77)
-View(fips77)
+#View(fips77)
 
-# Plot all fips on the same chart
 # compare differences between black and white average sentences
+# county summary stats by race
+county_summary <- mean_sent_by_racefips %>%
+  spread(Race, mean_adjusted_sentence) %>%
+  mutate(
+    diff = `Black (Non-Hispanic)` - `White Caucasian (Non-Hispanic)`, # for each fips, substract avg_sent if(black) from avg_sent if(white)
+    diff_perc = round(((diff/`Black (Non-Hispanic)`)*100),2) #value for black and white calculated as a percentage of black sent times
+  ) %>%
+  inner_join(fips_data_table,by=c("Fips_Where_Filed"="fips")) # add the name of the location by fips code
+county_summary <- county_summary[,c(1,6,2,3:5)] # reorganize to put name next to fips
+setnames(county_summary, old=c("Black (Non-Hispanic)","White Caucasian (Non-Hispanic)"), new=c("black_avg_sent_times", "white_avg_sent_times")) # give columns meaningful names
+#View(county_summary)
 
-# compute differences b/w b&w average sentences
-# for each fips, substract avg_sent if(black) from avg_sent if(white), store
-fips77_dif <- fips77
+#compute number of cases per race by fips
+count_sent_by_racefips <- guilty_blackwhite_cases %>%
+  group_by(Race, Fips_Where_Filed) %>%
+  summarise(num_cases = n())
 
-# I made a table storing the mean avgerage sentence time grouped by fips and race (only black and white). I want to look at each fips and subtract the average for each race, then store that difference as a value associated with each fips. 
+count_sent_by_racefips <- spread(count_sent_by_racefips, Race, num_cases)
+setnames(count_sent_by_racefips, old=c("Black (Non-Hispanic)","White Caucasian (Non-Hispanic)"), new=c("black_num_cases", "white_num_cases")) # give columns meaningful names
+#View(count_sent_by_racefips)
 
-#The table looks something like this:
-# Race | fips | mean
-# Black | 77 | 20
-# White | 77 | 19
-# Black | 105 | 55
-# White | 105 | 21
+#add to summary table
+county_summary <- inner_join(county_summary, count_sent_by_racefips, by=c("Fips_Where_Filed"))
+#View(county_summary)
 
-# I want to get something like this:
-# fips | dif
-# 77 | 1
-# 105 | 34
+#add a column for total number of cases
+county_summary <- mutate(county_summary, total_cases=black_num_cases + white_num_cases )
+#View(county_summary)
+
+#add a column for percentage of cases black
+county_summary <- mutate(county_summary, perc_black = round(((black_num_cases/total_cases)*100),2) )
+View(county_summary)
+
+#determine mean of the total sentence times before adjustment
+mean_sent_by_racefips_t <- guilty_blackwhite_cases %>%
+  group_by(Race, Fips_Where_Filed) %>%
+  summarise(mean_total_sentence = mean(Sentence_Time_Total))
+#View(mean_sent_by_racefips_t)
+
+#add eval columns
+mean_sent_by_racefips_t <- mean_sent_by_racefips_t %>%
+  spread(Race, mean_total_sentence) %>%
+  setnames(old=c("Black (Non-Hispanic)","White Caucasian (Non-Hispanic)"), new=c("black_avg_sent_times_t", "white_avg_sent_times_t")) # give columns meaningful names
+mean_sent_by_racefips_t <- mean_sent_by_racefips_t %>%mutate(diff_total = black_avg_sent_times_t - white_avg_sent_times_t, # for each fips, substract avg_sent if(black) from avg_sent if(white)
+         diff_total_perc = round(((diff_total/black_avg_sent_times_t)*100),2) #value for black and white calculated as a percentage of black sent times
+  )
+View(mean_sent_by_racefips_t)
 
 
+county_summary <- inner_join(county_summary, mean_sent_by_racefips_t, by=c("Fips_Where_Filed"))
+View(county_summary)
 
-#ggplot (data = <DATA> ) + geom_point(), x, y, alpha, color, fill, shape, size, stroke
-#black and white people different colors
-point_graph <- ggplot (data = mean_sent_by_racefips, aes(mean_adjusted_sentence, fill=Race)) + 
-  geom_histogram()
-point_graph
+#output the data frame as a csv file
+write.csv(county_summary, file = "/Volumes/TOSHIBA_EXT/UMD/Data\ Journalism/Data_Analysis_Project/virginia-court-data/data/county_summary.csv")
 
+View(summary(county_summary))
 
+# Look at only counties where at least 50 black people were charged, to reduce the swing caused by any individual case
+
+# What did the people in the top disparate counties do?
+View(fips_filter(aggregate_data_table, 105)) #Lee, one outlier skewed the data
+View(fips_filter(aggregate_data_table, 760)) #Richmond, just more than a year
+View(fips_filter(aggregate_data_table, 169)) #Scott
