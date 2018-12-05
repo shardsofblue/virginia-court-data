@@ -11,20 +11,22 @@ library(lubridate)
 library(gridExtra)
 library(cowplot)
 library(data.table)
-theme_set(theme_cowplot(font_size=10)) # reduce default font size on charts
+library(scales)
+
+setwd("/Volumes/TOSHIBA_EXT/UMD/Data\ Journalism/Data_Analysis_Project/virginia-court-data/")
 
 ###############
 ## Data Prep ##
 ###############
 
 # Load in the aggregate data CSV
-aggregate_data_table <- read.csv(file="/Volumes/TOSHIBA_EXT/UMD/Data\ Journalism/Data_Analysis_Project/virginia-court-data/data/aggregate_data_2007-2017.csv",head=TRUE,sep=";")
+aggregate_data_table <- read.csv(file="data/aggregate_data_2007-2017.csv",head=TRUE,sep=";")
 
 # Load in the fips code data CSV
-fips_data_table <- read.csv(file="/Volumes/TOSHIBA_EXT/UMD/Data\ Journalism/Data_Analysis_Project/virginia-court-data/data/circuit_courts_fips.csv",head=TRUE,sep=",")
+fips_data_table <- read.csv(file="data/circuit_courts_fips.csv",head=TRUE,sep=",")
 
 # Load in demographic data CSV from 2017 census
-demographic_data_table <- read.csv(file="/Volumes/TOSHIBA_EXT/UMD/Data\ Journalism/Data_Analysis_Project/virginia-court-data/data/census_data/PEP_2017_PEPSR5H_with_ann.csv",head=TRUE,sep=",")
+demographic_data_table <- read.csv(file="data/census_data/PEP_2017_PEPSR5H_with_ann.csv",head=TRUE,sep=",")
 
 # Filter the data set for only guilty
 guilty_cases <- aggregate_data_table %>%
@@ -35,7 +37,7 @@ guilty_cases <- aggregate_data_table %>%
 guilty_blackwhite_cases <- aggregate_data_table %>%
   filter(Disposition_Code == "Guilty") %>%
   filter(Race == "Black (Non-Hispanic)" | Race == "White Caucasian (Non-Hispanic)")
-#View(guilty_blackwhite_cases)
+View(guilty_blackwhite_cases)
 
 # Add a column of logs of ag sentence times
 guilty_bw_logs <- guilty_blackwhite_cases
@@ -80,7 +82,7 @@ race_hist <- function(loc_fips, starting_df){
 }
 #test <- race_hist(77,guilty_blackwhite_cases)
 #test
-#ggsave("test.png", plot=test, path="/Volumes/TOSHIBA_EXT/UMD/Data\ Journalism/Data_Analysis_Project/virginia-court-data/bits_bobs/test_outputs")
+#ggsave("test.png", plot=test, path="bits_bobs/test_outputs")
 
 # Create and save histograms for adjusted sentence times for each circuit court by fips
 mass_hist_adjsent <- function(starting_df){
@@ -95,7 +97,7 @@ mass_hist_adjsent <- function(starting_df){
     histo_i <- histo_maker(loc_name, table_i, table_i$Adjusted_Sentence, table_i$Race) #make a histograph for each fips code
     
     save_name <- paste("histo_",loc_fips,".png",sep="") #specificy a save name, then save it
-    ggsave(save_name, histo_i, path="/Volumes/TOSHIBA_EXT/UMD/Data\ Journalism/Data_Analysis_Project/virginia-court-data/bits_bobs/histograms")
+    ggsave(save_name, histo_i, path="bits_bobs/histograms")
   }
 }
 
@@ -128,8 +130,11 @@ ggplot(data=guilty_cases, aes(guilty_cases$Adjusted_Sentence)) +
 #########################################
 
 # Automated creation of histograms for sentence time
-mass_hist_adjsent(guilty_blackwhite_cases)
+#mass_hist_adjsent(guilty_blackwhite_cases)
 
+###############################
+## Racial analyses by county ##
+###############################
 # group by fips and race and get averages
 #SELECT average(guilty_blackwhite_cases.Adjusted_Sentence)
 #GROUP BY Race, fips WITH ROLLUP
@@ -143,7 +148,10 @@ mean_sent_by_racefips <- guilty_blackwhite_cases %>%
 fips77 <- fips_filter(mean_sent_by_racefips, 77)
 #View(fips77)
 
-# compare differences between black and white average sentences
+###################################################################
+## Compare differences between black and white average sentences ##
+###################################################################
+
 # county summary stats by race
 county_summary <- mean_sent_by_racefips %>%
   spread(Race, mean_adjusted_sentence) %>%
@@ -188,20 +196,99 @@ mean_sent_by_racefips_t <- mean_sent_by_racefips_t %>%
   spread(Race, mean_total_sentence) %>%
   setnames(old=c("Black (Non-Hispanic)","White Caucasian (Non-Hispanic)"), new=c("black_avg_sent_times_t", "white_avg_sent_times_t")) # give columns meaningful names
 mean_sent_by_racefips_t <- mean_sent_by_racefips_t %>%mutate(diff_total = black_avg_sent_times_t - white_avg_sent_times_t, # for each fips, substract avg_sent if(black) from avg_sent if(white)
-         diff_total_perc = round(((diff_total/black_avg_sent_times_t)*100),2) #value for black and white calculated as a percentage of black sent times
-  )
+                                                             diff_total_perc = round(((diff_total/black_avg_sent_times_t)*100),2) #value for black and white calculated as a percentage of black sent times
+)
 #View(mean_sent_by_racefips_t)
 
-
+# Add to county_summary data frame
 county_summary <- inner_join(county_summary, mean_sent_by_racefips_t, by=c("Fips_Where_Filed"))
 View(county_summary)
 
-#output the data frame as a csv file
-write.csv(county_summary, file = "/Volumes/TOSHIBA_EXT/UMD/Data\ Journalism/Data_Analysis_Project/virginia-court-data/data/county_summary.csv")
+#output the data frame as a csv file to view in other programs
+write.csv(county_summary, file = "data/county_summary.csv")
 
 View(summary(county_summary))
 
 # Look at only counties where at least 50 black people were charged, to reduce the swing caused by any individual case
+county_summary_filtered <- county_summary %>%
+  filter(black_num_cases >= 250 & white_num_cases >= 250 & total_cases >= 1000) 
+
+#for messing with charts without breaking things
+csf_charted <- county_summary_filtered
+csf_charted$Fips_Where_Filed <- factor(csf_charted$Fips_Where_Filed, as.character(csf_charted$Fips_Where_Filed))
+csf_charted$name <- str_replace(csf_charted$name, " Circuit Court", "")
+#View(csf_charted)
+
+# Starting universe: Guilty, black/white, 1,000 or more cases total, 25% or more are black/white
+# print(nrow(csf_charted)) #67 counties
+
+##########################
+## Adjusted Days (Real) ##
+##########################
+
+# Create a chart showing the distribution of means as bars compared to a center point
+chart1 <- ggplot(csf_charted, aes(x=reorder(name,-diff), diff)) +
+  geom_bar(stat = "identity", 
+           aes(fill = diff)
+           ) +
+  labs(x = "Counties", y = "Average Days Difference", title = "Days Difference Between Black and White Sentence Times") +
+  theme_cowplot(font_size=6) +
+  background_grid(
+    major = c("xy"), minor = c("y"),
+    size.major = 0.5, size.minor = 0.0, 
+    colour.major = "gray60", colour.minor = "gray42") + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1), legend.position="none")
+chart
+
+ggsave("adjusted_real_diff.png", chart1, path="bits_bobs/bar_graphs")
+
+######################
+## Adjusted Percent ##
+######################
+
+# Create a chart showing the distribution of means as bars compared to a center point
+chart2 <- ggplot(csf_charted, aes(x=reorder(name,-diff_perc), diff_perc)) +
+  geom_bar(stat = "identity", 
+           aes(fill = diff_perc)
+  ) +
+  labs(x = "Counties", y = "Average Percent Difference", title = "Percent Difference Between Black and White Sentence Times") +
+  theme_cowplot(font_size=6) +
+  background_grid(
+    major = c("xy"), minor = c("y"),
+    size.major = 0.5, size.minor = 0.0, 
+    colour.major = "gray60", colour.minor = "gray42") + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1), legend.position="none")
+chart2
+
+ggsave("adjusted_percent_diff.png", chart2, path="bits_bobs/bar_graphs")
+
+#[DONE]beautify chart axis labels
+#[DONE]run same chart by percentage
+#[DONE]identify problem counties
+##REAL DAYS         ##PERC
+  #1.Southampton*     ##Richmond City*
+  #2.Fauquier*        ##Southampton*
+  #3.Bristol*         ##Salem
+  #4.Richmond City*   ##Alleghany^
+  #5.Dinwiddie*       ##Norfolk^
+  #6.Norfolk^         ##Britol*
+  #7.Alleghany^       ##Pulaski
+  #8.Lynchburg        ##Fauquier*
+  #9.Newport News     ##Dinwiddie*
+  #10.Virginia Beach  ##York/Poquoson
+
+#look into other factors of individual counties 
+##date trends
+##crime type
+##run a check on nat lang field (Charge_Descriptions) or Code_Sections as first pass on crime types?
+
+#b/w found guilty/ng
+##demographics compared to census b.
+
+#Out of project scope
+##clean crime types
+##look into specific cases
+##interview relevavant officials
 
 # What did the people in the top disparate counties do?
 View(fips_filter(aggregate_data_table, 105)) #Lee, one outlier skewed the data
