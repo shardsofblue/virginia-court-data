@@ -14,7 +14,7 @@ Of the remaining 11 counties, the greatest swing in the other direction — wher
 
 ![Percent difference](bits_bobs/bar_graphs/adjusted_percent_diff.png)
 
-Finally, the five most populous counties all showed sentence disparities in which black people served longer sentence times than white people. Percent difference:
+Finally, the five most populous counties — each at more than 10,000 people — all showed sentence disparities in which black people served longer sentence times than white people. Percent difference:
 * Richmond: 56 
 * Norfolk: 48 
 * Henrico: 44 
@@ -45,7 +45,7 @@ Their findings:
 >
 >They give blacks more time behind bars — sometimes double the sentences of whites accused of the same crimes under identical circumstances.
 
-The article begins by laying out its general findings, which are numerous, then presents anecdotes exemplifying those findings. Bar charts illustrate each finding. It also places the issue in context by exploring historical racial tensions. Finally, it presents an overview of existing checks and oversight of sentencing practices (of which there is little) and the racial makeup of the court system.
+The article begins by laying out its general findings, which are numerous, then presents anecdotes exemplifying those findings. Bar charts illustrate each finding. It also places the issue in context by exploring historic racial tensions. Finally, it presents an overview of existing checks and oversight of sentencing practices (of which there is little) and the racial makeup of the court system (which is overwhelmingly white).
 
 ### Academic Research
 - [Examining Sentencing Disparity in Virginia: The Impact of Race and Sex on Mitigating Departures for Drug Offenders](https://www.emeraldinsight.com/doi/abs/10.1108/S1521-613620170000022010), Sociology of Crime, Law and Deviance, Volume 22, Emerald Publishing Limited; 2017
@@ -58,12 +58,12 @@ My analysis looked at sentence times for black and white people found guilty of 
 ### Strengths
 Because the data set is not a sample of cases but rather every case, statistical variance is not an issue. Additionally, because I only analyzed counties with a given threshold of total and black/white cases, I limited the effect of outlier cases on the overall results. 
 
-In order to understand each case holistically, I grouped charges based on defendant name, location, year filed and race. This should allow a more truthful understanding of sentencing times than looking at each charge individually. 
+In order to understand each case holistically, I grouped charges based on defendant name, location, year filed and race. This should allow a more truthful understanding of sentencing times per case, as opposed to looking at each charge individually. 
 
 ### Weaknesses
-The analysis only uses numbers to limit the effect of outlier cases. A more thorough analysis would look more closely into each county to identify and understand potential outlier cases and their effect on the results.
+The analysis only uses high numbers of cases to limit the effect of outlier cases. A more thorough analysis would look more closely into each county to identify and understand potential outlier cases and their effect on the results.
 
-The aggregation did not take into account birthdays or date of offense, so this grouping may need adjustment to ensure unrelated cases are not grouped together. 
+The aggregation did not take into account birthdays or dates of offense, so this grouping may need further adjustment to ensure unrelated cases are not grouped together. 
 
 This analysis did not control for the same variables as the USSC report. Some, such as age and criminal history, are not included in the data I analyzed.
 
@@ -73,25 +73,6 @@ The underlying data set analyzed did not include some counties, most notably Fai
 
 Finally, the R code is messy and difficult to reproduce. This is a result of learning and applying the language on the fly. Since an important part of this analysis was finishing it on deadline, clean code was not my priority; but I could and should clean it up given the time. 
 
-## Next Steps
-### Verification and Fairness
-- Compare against the Emerald journal's findings
-- Speak with county clerks to ensure proper understanding of crime codes and crime descriptions, as needed
-- Interview county prosecutors, judges, legal experts, county clerks
-
-### Further Reporting and Analysis
-- Dive deeper into each county to look for outlier cases skewing results
-- Clean crime codes (before aggregating) for analysis
-- More deeply analyze report from USSC (FOIA underlying data) and Emerald journal
-- Discuss methodology with Herald reporters
-- Compare rates of sentencing with census data on racial demographics for deeper context within counties
-- Find especially interesting cases to use as anecdotes: interview relevant parties (defendants, judges, prosecutors, etc.), preferably on location to be able to add descriptors of the areas in question
-- Examine how the disparity has changed over time
-
-### Code Adjustments
-- Clean up existing R code for better utility and reproducibility
-- Tweak aggregation to add birthday, sex and offense date as differentiating factors
-
 ## Narrative Example
 The most effective examples would be to find paired cases, one black and one white, for which the charges are the same but the sentence is greater for the black than the white person. Drilling into the data this way will be more effective once the charge data are cleaned and more controls are in place as mentioned above, but as it stands I found the following illustrative case:
 
@@ -100,24 +81,26 @@ Two white defendants and one black were charged with and found guilty of a singl
 
 All three defendants received a sentence of five years, but both white defendants had their sentences suspended by the full amount, while the black defendant had to serve about three months in prison.
 
+## Next Steps
+### Verification and Fairness
+- Compare against the Emerald journal's findings
+- Speak with county clerks to ensure proper understanding of crime codes and crime descriptions, as needed
+- Interview county prosecutors, judges, legal experts and county clerks to allow them to respond to my findings and provide alternate explanations besides racial bias
+- Take special care to ensure any anecdotes account for outstanding factors such as criminal history
 
+### Code Adjustments
+- Clean up existing R code for better utility and reproducibility
+- Tweak aggregation to add birthday, sex and offense date as differentiating factors
 
+### Further Reporting and Analysis
+- Dive deeper into each county to look for outlier cases that may be skewing results
+- Clean crime type fields and re-agregate for analysis
+- More deeply analyze the Emerald journal's findings and the report from USSC (file FOIA for underlying data)
+- Discuss methodology with Herald reporters
+- Compare rates of sentencing with census data on racial demographics for deeper context within counties
+- Find especially interesting cases to use as anecdotes, then look more deeply into them and interview relevant parties (defendants, judges, prosecutors, etc.), preferably on location to be able to add descriptors of the areas in question
+- Examine how the disparity has changed over time statewide and in specific counties
 
-## Project Requirements
-* A strong statement at the top. 
-  * Tell me right up front what you found that was interesting or what you found that suggests a dynamite story. 
-  * Tell me how your most newsworthy findings relate to what you found in your research about prior uses of similar data for stories elsewhere.
-* A summary of the results of your analysis. 
-  * Describe results that are germane to the main thrust of the story you are pitching 
-  * relevant results that suggest other interesting avenues to explore. You may want to include graphics, tables or charts that will make it easier for me to grasp what you are trying to communicate. 
-  * Indicate whether your findings are new or whether they present a local angle for similar findings reported elsewhere.
-* Pros and cons of the data. 
-  * Discuss both the strengths and limitations of the data.
-  * How you would verify your findings: Identify the specific reporting and data steps would you take and the types of information you would use to determine whether the results of your analysis are accurate and significant. 
-* Indicate the specific steps you would need to take to finish reporting the story.
-  * Indicate whom you would need to contact for response to ensure that your reporting was fair and accurate.
-  * Include the people you would contact and, if relevant, the places you would visit. Indicate how you would make the story real to readers. 
-  * Construct a narrative example from one case based on as much information as you can draw from all of the tables that pertain to that case.
 
 
 
