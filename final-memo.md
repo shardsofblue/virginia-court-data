@@ -19,7 +19,7 @@ Finally, the five most populous counties all showed sentence disparities in whic
 * Chesterfield: 39
 * Chesapeake: 35
 
-![alt text](../master/bits_bobs/bar_graphs/adjusted_percent_diff_10k)
+![alt text](../tree/master/bits_bobs/bar_graphs/adjusted_percent_diff_10k.png)
 
 ## Issue in Context
 
