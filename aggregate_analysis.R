@@ -277,7 +277,7 @@ chart2 <- ggplot(csf_charted, aes(x=reorder(name,-diff_perc), diff_perc)) +
            aes(fill = diff_perc)
   ) +
   labs(x = "Counties", y = "Average Percent Difference", title = "Percent Difference Between Black and White Sentence Times") +
-  theme_cowplot(font_size=6) +
+  theme_cowplot(font_size=5) +
   background_grid(
     major = c("xy"), minor = c("y"),
     size.major = 0.5, size.minor = 0.0, 
