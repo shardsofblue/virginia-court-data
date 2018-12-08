@@ -1,4 +1,16 @@
-#Analysis file for Virginia court data for Plea Bargain Project. By Roxanne Ready, started on Aug. 27, 2018.
+# Analysis file for Virginia court data for University of Maryland JOUR-472 Data Analysis Project. 
+# Started Oct. 29, 2018
+# By Roxanne Ready
+
+# Github repository: https://github.com/shardsofblue/virginia-court-data
+
+# Note that some actions are commented out to allow re-running the entire file without View windows popping open or duplicate files being created.
+
+###########
+## Setup ##
+###########
+
+# Install and load packages
 install.packages("tidyverse")
 install.packages('stringr')
 install.packages('lubridate')
@@ -13,6 +25,7 @@ library(cowplot)
 library(data.table)
 library(scales)
 
+# Set working directory
 setwd("/Volumes/TOSHIBA_EXT/UMD/Data\ Journalism/Data_Analysis_Project/virginia-court-data/")
 
 ###############
@@ -24,6 +37,7 @@ aggregate_data_table <- read.csv(file="data/aggregate_data_2007-2017.csv",head=T
 
 # Load in the fips code data CSV
 fips_data_table <- read.csv(file="data/circuit_courts_fips.csv",head=TRUE,sep=",")
+#View(fips_data_table)
 
 # Load in demographic data CSV from 2017 census
 demographic_data_table <- read.csv(file="data/census_data/PEP_2017_PEPSR5H_with_ann.csv",head=TRUE,sep=",")
@@ -37,9 +51,9 @@ guilty_cases <- aggregate_data_table %>%
 guilty_blackwhite_cases <- aggregate_data_table %>%
   filter(Disposition_Code == "Guilty") %>%
   filter(Race == "Black (Non-Hispanic)" | Race == "White Caucasian (Non-Hispanic)")
-View(guilty_blackwhite_cases)
+#View(guilty_blackwhite_cases)
 
-# Add a column of logs of ag sentence times
+# Add a column of logs of ag sentence times UNUSED
 guilty_bw_logs <- guilty_blackwhite_cases
 guilty_bw_logs$log_adjusted_sentence <- log10(guilty_blackwhite_cases$Adjusted_Sentence)
 #View(guilty_bw_logs)
@@ -107,7 +121,7 @@ mass_hist_adjsent <- function(starting_df){
 
 # Summarize aggregate_data_table
 summary_df <- summary(aggregate_data_table)
-View(summary_df)
+#View(summary_df)
 
 # histogram for guilty plea cases' sentence times
 ggplot(data=guilty_cases, aes(guilty_cases$Sentence_Time_Total)) + 
@@ -185,6 +199,7 @@ county_summary <- mutate(county_summary, total_cases=black_num_cases + white_num
 county_summary <- mutate(county_summary, perc_black = round(((black_num_cases/total_cases)*100),2) )
 #View(county_summary)
 
+## PRE ADJUSTMENT NUMBERS ADDED (*_t)
 #determine mean of the total sentence times before adjustment
 mean_sent_by_racefips_t <- guilty_blackwhite_cases %>%
   group_by(Race, Fips_Where_Filed) %>%
@@ -202,7 +217,7 @@ mean_sent_by_racefips_t <- mean_sent_by_racefips_t %>%mutate(diff_total = black_
 
 # Add to county_summary data frame
 county_summary <- inner_join(county_summary, mean_sent_by_racefips_t, by=c("Fips_Where_Filed"))
-View(county_summary)
+#View(county_summary)
 
 #output the data frame as a csv file to view in other programs
 write.csv(county_summary, file = "data/county_summary.csv")
@@ -213,6 +228,8 @@ View(summary(county_summary))
 county_summary_filtered <- county_summary %>%
   filter(black_num_cases >= 250 & white_num_cases >= 250 & total_cases >= 1000) 
 #View(county_summary_filtered)
+
+View(summary(county_summary_filtered))
 
 #for messing with charts without breaking things
 csf_charted <- county_summary_filtered
@@ -228,14 +245,6 @@ onlygreater <- filter(csf_charted,diff >0)
 
 onlylesser <- filter(csf_charted,diff <=0)
 #print(nrow(onlylesser)) #11
-
-##########################################
-## Repeat but with added year breakdown ##
-##########################################
-
-# would like to see how disparity has changed over time. This means repeating the above to further break out the groups by race and adding difference to each year
-#mean_sent_by_racefipsyear <- #stuff#
-  #View(mean_sent_by_racefipsyear)
 
 ##########################
 ## Adjusted Days (Real) ##
@@ -284,18 +293,86 @@ ggsave("adjusted_percent_diff.png", chart2, path="bits_bobs/bar_graphs")
 #######################
 
 # What did the people in the top disparate counties do?
-View(fips_filter(aggregate_data_table, 760)) #Richmond, just more than a year
-View(fips_filter(aggregate_data_table, 175)) #Scott
+#View(fips_filter(aggregate_data_table, 760)) #Richmond, just more than a year
+#View(fips_filter(aggregate_data_table, 175)) #Scott
 
-# Dataframe holding all info for the top 5 worst-offenders
+# Dataframe holding all info for the top 5 worst-offender counties
 top_5_all <- guilty_blackwhite_cases %>%
   filter(Fips_Where_Filed == 175 | Fips_Where_Filed == 61 | Fips_Where_Filed == 520 | Fips_Where_Filed == 760 | Fips_Where_Filed == 53)
 #View(top_5_all) #25,229 cases
 
-# Dataframe holding grouped data for the top 5 worst-offenders
+# Dataframe holding grouped data for the top 5 worst-offender counties
 top_5_grouped <- county_summary_filtered %>%
   filter(Fips_Where_Filed == 175 | Fips_Where_Filed == 61 | Fips_Where_Filed == 520 | Fips_Where_Filed == 760 | Fips_Where_Filed == 53)
 #View(top_5_grouped)
+
+#######################
+## Finding Anecdotes ##
+#######################
+
+# UNSUCCESSFUL
+norfolk_all <- fips_filter(guilty_blackwhite_cases, 710)
+#View(norfolk_all)
+
+norfolk_drill_down <- norfolk_all %>%
+  filter(str_detect(norfolk_all$Code_Section, "18.2-58"), #robbery
+         #str_detect(norfolk_all$Charge_Descriptions, "INT TO SELL"),
+         Was_Amended == "True",
+         Num_Charges == 1,
+         Year_Filed == 2015,
+         Trial_or_Plea == "Plea")
+#View(norfolk_drill_down)
+
+# UNSUCCESSFUL
+southampton_all <- fips_filter(guilty_blackwhite_cases, 175)
+#View(southampton_all)
+
+southampton_drill_down <- southampton_all %>%
+  filter(str_detect(southampton_all$Code_Section, "18.2-250"),
+         str_detect(southampton_all$Charge_Descriptions, "FENTANYL") | str_detect(southampton_all$Charge_Descriptions, "OXYCODONE"),
+         #Was_Amended == "True",
+         #Num_Charges == 3,
+         #Year_Filed == 2013 | Year_Filed == 2014 | Year_Filed == 2015 | Year_Filed == 2016 | Year_Filed == 2017,
+         Trial_or_Plea == "Plea")
+#View(southampton_drill_down)
+
+# ANECDOTE FOUND
+richmond_all <- fips_filter(guilty_blackwhite_cases, 760)
+#View(richmond_all)
+
+richmond_drill_down <- richmond_all %>%
+  filter(str_detect(richmond_all$Code_Section, "18.2-250"), #drug posession
+         str_detect(richmond_all$Charge_Descriptions, "HEROIN"),
+         Num_Charges == 1,
+         Year_Filed == 2017)
+#View(richmond_drill_down)
+
+## LIMITING THE DATASET
+# Dataframe where total cases > 10,000
+over_10k <- csf_charted %>%
+  filter(total_cases > 10000)
+View(over_10k)
+
+# Create a chart showing the distribution of means as bars compared to a center point
+chart3 <- ggplot(over_10k, aes(x=reorder(name,-diff_perc), diff_perc)) +
+  geom_bar(stat = "identity", 
+           aes(fill = diff_perc)
+  ) +
+  labs(x = "Counties", y = "Average Percent Difference", title = "Percent Difference Between Black and White Sentence Times") +
+  theme_cowplot(font_size=6) +
+  background_grid(
+    major = c("xy"), minor = c("y"),
+    size.major = 0.5, size.minor = 0.0, 
+    colour.major = "gray60", colour.minor = "gray42") + 
+  theme_gray() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1), legend.position="none")
+chart3
+
+ggsave("adjusted_percent_diff_10k.png", chart3, path="bits_bobs/bar_graphs")
+
+###############################
+## Number of Cases Over Time ##
+###############################
 
 # Count the number of cases in each county in each year
 grouped_by_year <- top_5_all %>%
@@ -312,10 +389,6 @@ setnames(grouped_by_year,old=c("name"), new=c("County")) # give columns meaningf
 grouped_by_year$County <- str_replace(grouped_by_year$County, " Circuit Court", "") # trim off repetitive naming
 grouped_by_year$County <- factor(grouped_by_year$County) # make counties distinct
 grouped_by_year$Year_Filed <- factor(grouped_by_year$Year_Filed) # make years distinct
-
-##########################
-## Time Series Analysis ##
-##########################
 
 # Plot number of cases by fips/year
 i1 <- grouped_by_year %>%
@@ -347,7 +420,13 @@ i2 <- grouped_by_year %>%
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
 i2
 
-
 # Plot sentence times by race/fips/year (Line 232)
 
+###############################################
+## Repeat analysis with added year breakdown ##
+###############################################
+
+# would like to see how disparity has changed over time. This means repeating the spread on line 155 and the analysis below it to further break out the groups by race and adding difference to each year
+#mean_sent_by_racefipsyear <- #stuff#
+#View(mean_sent_by_racefipsyear)
 

@@ -863,10 +863,12 @@ DROP TABLE "Temp2";
 /* I need to account for Fairfax county being missing */
 /* Look into specific regions by fips code */
 
-/* I really need a table in which cases are grouped by individual. I need to figure out how to aggregate them automatically the way I did manually in Excel. Each defendent should have: 
-+name
--case numbers
--(offense date)
+/* I really need a table in which cases are grouped by individual. I need to figure out how to aggregate them automatically the way I did manually in Excel. Each defendent should have (+ indicates implemented): 
++case numbers
++defendent name (spawn new name line if multiple)
+-defendent birthday (spawn new name line if multiple)
+-defendent sex (spawn new name line if multiple)
+-offense date
 +dates filed
 +year filed (spawn new name line if multiple)
 +fips code where filed (spawn new name line if multiple)
@@ -885,7 +887,7 @@ DROP TABLE "Temp2";
 +MATH summed suspension times
 +LOGIC/MATH summed adjusted sentence times
 +life/death
--(LOGIC/MATH summed adjusted sentence times including life as 99 years) see notes below query
+-LOGIC/MATH summed adjusted sentence times including life as 99 years — see notes below query
 */
 
 
@@ -1196,5 +1198,4 @@ GROUP BY "Aggregate_Data"."Race", "Aggregate_Data"."Trial_or_Plea"
 
 */
 
-/* FINDING OF INTEREST: More white people (X%) chose a plea deal than black people did (X%).
 
