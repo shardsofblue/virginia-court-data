@@ -10,7 +10,7 @@ But in individual counties, the difference was sometimes much greater.
 
 Fifty-six of the 67 counties studied showed black people serving longer sentences than white. Southhampton was one of the worst offenders, with black people spending an average of 1.5 years longer behind bars, 52 percent more time than white people.
 
-Of the remaining 11 counties, the greatest swing in the other direction — where white people spent longer in prison than black — was in Bedford, a 51 percent difference at about one year.
+Of the remaining 11 counties, the greatest swing in the other direction — where white people spent longer in prison than black — was in Bedford, a 51 percent difference or about one year.
 
 ![Percent difference](bits_bobs/bar_graphs/adjusted_percent_diff.png)
 
@@ -21,7 +21,7 @@ Finally, the five most populous counties all showed sentence disparities in whic
 * Chesterfield: 39
 * Chesapeake: 35
 
-<img src="bits_bobs/bar_graphs/adjusted_percent_diff_10k.png" alt="Percent difference in top 5 most highly populated counties" width="400"/>
+<img src="bits_bobs/bar_graphs/adjusted_percent_diff_10k-1.png" alt="Percent difference in top 5 most highly populated counties" width="400"/>
 
 
 ## Issue in Context
