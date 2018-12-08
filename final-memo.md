@@ -12,6 +12,8 @@ Fifty-six of the 67 counties studied showed black people serving longer sentence
 
 Of the remaining 11 counties, the greatest swing in the other direction — where white people spent longer in prison than black — was in Bedford, a 51 percent difference at about one year.
 
+<img src="bits_bobs/bar_graphs/adjusted_percent_diff.png" alt="Percent difference" width="400"/>
+
 Finally, the five most populous counties all showed sentence disparities in which black people served longer sentence times than white people. Percent difference:
 * Richmond: 56 
 * Norfolk: 48 
