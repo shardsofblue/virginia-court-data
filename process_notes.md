@@ -1,6 +1,6 @@
 # Process Notes for virginia-court-data
 
-*Last updated: Dec. 5*
+*Last updated: Dec. 8*
 
 ## To do
 * [DONE]write function to pull fips codes from a .csv and insert them one by one into histograph-creating function
@@ -9,20 +9,6 @@
 * [DONE]beautify chart axis labels
 * [DONE]run same chart by percentage
 * [DONE]identify problem counties
-
-REAL DAYS | PERC
---- | ---
-Southampton    |  Richmond City
-Fauquier       |  Southampton
-Bristol        |  Salem
-Richmond City  |  Alleghany
-Dinwiddie      |  Norfolk
-Norfolk        |  Britol
-Alleghany      |  Pulaski
-Lynchburg      |  Fauquier
-Newport News   |  Dinwiddie
-Virginia Beach |  York/Poquoson
-
 * [DONE]research other articles about racial divide in sentence times
 
 * Out of project scope
