@@ -7,7 +7,7 @@
 
 ## Findings
 
-In many Virginia counties, black people are spending more time in prison than white people for committing the same crimes. This analysis is the first of its kind in Virginia, but the findings are consistent with other recent nation- and state-wide analyses (see [below](#issue-in-context)).
+In many Virginia localities, black people are spending more time in prison than white people for committing the same crimes. This analysis is the first of its kind in Virginia, but the findings are consistent with other recent nation- and state-wide analyses (see [below](#issue-in-context)).
 
 Across Virginia from 2007-2017, black people were sentenced to about a half year longer in prison than white people, an average of 25 percent more time. That's 6 percent more than the national average as reported in 2017 by the U.S. Sentencing Commission.
 
@@ -30,7 +30,7 @@ Percent difference in localities with >10k cases | Percent difference over time 
 --- | ---
 <img src="bits_bobs/bar_graphs/adjusted_percent_diff_10k-1.png" alt="Percent difference in localities with the most cases" width="400"/> | <img src="bits_bobs/line_charts/10k-sent-diff.png" alt="Percent difference over time in top 5 localities with the most cases" width="400"/> 
 
-Counties with greatest disparities:
+Localities with greatest disparities:
 
 REAL DAYS | PERC
 --- | ---
@@ -77,15 +77,15 @@ The article begins by laying out its general findings, which are numerous, then 
 
 ## Strengths and Limitations of Analysis
 ### Scope
-My analysis looked at sentence times for black and white people found guilty of a crime, adjusted for sentence suspensions from 2007 to 2017. It only considered counties with at least 1,000 of such cases and a 25 percent minimum percentage of cases in each of the two racial categories. The underlying data was scraped by [Ben Schoenfeld](https://medium.com/@virginiacourtdata/virginia-court-data-fields-e224a9a41e15) from Virginia's searchable online database of court cases.
+My analysis looked at sentence times for black and white people found guilty of a crime, adjusted for sentence suspensions from 2007 to 2017. It only considered localities with at least 1,000 of such cases and a 25 percent minimum percentage of cases in each of the two racial categories. The underlying data was scraped by [Ben Schoenfeld](https://medium.com/@virginiacourtdata/virginia-court-data-fields-e224a9a41e15) from Virginia's searchable online database of court cases.
 
 ### Strengths
-Because the data set is not a sample of cases but rather a complete set of every case in the time period, statistical variance is not an issue. Additionally, because I only analyzed counties with a given threshold of total and black/white cases, I limited the effect of outlier cases on the overall results. 
+Because the data set is not a sample of cases but rather a complete set of every case in the time period, statistical variance is not an issue. Additionally, because I only analyzed localities with a given threshold of total and black/white cases, I limited the effect of outlier cases on the overall results. 
 
 In order to understand each case holistically, I grouped charges based on defendant name, location, year filed and race. This should allow a more truthful understanding of sentencing times per case, as opposed to looking at each charge individually. 
 
 ### Weaknesses
-The analysis only uses high numbers of cases to limit the effect of outlier cases. A more thorough analysis would look more closely into each county to identify and understand potential outlier cases and their effect on the results.
+The analysis only uses high numbers of cases to limit the effect of outlier cases. A more thorough analysis would look more closely into each locality to identify and understand potential outlier cases and their effect on the results.
 
 The underlying data set analyzed did not include some counties, most notably Fairfax County, which has a population of more than 1 million people.
 
@@ -113,14 +113,14 @@ All three defendants received a sentence of five years, but both white defendant
 - Clean crime type fields and re-agregate.
 
 ### Further Reporting and Analysis
-- Dive deeper into each county to look for outlier cases that may be skewing results.
+- Dive deeper into each locality to look for outlier cases that may be skewing results.
 - Analyze by crime type.
 - More deeply analyze the Emerald journal's findings and methodology and the report from USSC (file FOIA for underlying data).
 - Reach out to Herald reporters to discuss methodology.
-- Compare rates of sentencing with census data on racial demographics for deeper context within counties.
+- Compare rates of sentencing with census data on racial demographics for deeper context within localities.
 - Find especially interesting cases to use as anecdotes, then look more deeply into them and interview relevant parties (defendants, judges, prosecutors, etc.).
-- Visit the locations to write first-hand descriptors of the areas in question
-- Examine how the disparity has changed over time statewide and in specific counties.
+- Visit the locations to write first-hand descriptors of the areas in question.
+- Examine how the disparity has changed over time statewide and in specific localities, and look into changes to sentencing law changes and other factors that may contribute to those changes.
 
 ### Verification and Fairness
 - Compare against the Emerald journal's findings.
