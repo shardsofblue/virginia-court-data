@@ -13,6 +13,19 @@ But in individual court jurisdictions, the difference was sometimes much greater
 
 Fifty-six of the 67 localities studied showed black people serving longer sentences than white. Southhampton was one of the worst offenders, with black people spending an average of 1.5 years longer behind bars, 52 percent more time than white people.
 
+Of the remaining 11 localities, the greatest swing in the other direction — where white people spent longer in prison than black — was in Bedford, a 51 percent difference or about one year.
+
+![Percent difference](bits_bobs/bar_graphs/adjusted_percent_diff.png)
+
+Finally, the five areas with the most cases — each at more than 10,000 cases — all showed sentence disparities in which black people served longer sentence times than white people. Percent difference:
+* Richmond City: 56 
+* Norfolk: 48 
+* Henrico: 44 
+* Chesterfield: 39
+* Chesapeake: 35
+
+<img src="bits_bobs/bar_graphs/adjusted_percent_diff_10k-1.png" alt="Percent difference in top 5 counties with the most cases" width="400"/>
+
 Counties with greatest disparities:
 
 REAL DAYS | PERC
@@ -27,20 +40,6 @@ Alleghany      |  Pulaski
 Lynchburg      |  Fauquier
 Newport News   |  Dinwiddie
 Virginia Beach |  York/Poquoson
-
-Of the remaining 11 localities, the greatest swing in the other direction — where white people spent longer in prison than black — was in Bedford, a 51 percent difference or about one year.
-
-![Percent difference](bits_bobs/bar_graphs/adjusted_percent_diff.png)
-
-Finally, the five areas with the most cases — each at more than 10,000 cases — all showed sentence disparities in which black people served longer sentence times than white people. Percent difference:
-* Richmond City: 56 
-* Norfolk: 48 
-* Henrico: 44 
-* Chesterfield: 39
-* Chesapeake: 35
-
-<img src="bits_bobs/bar_graphs/adjusted_percent_diff_10k-1.png" alt="Percent difference in top 5 counties with the most cases" width="400"/>
-
 
 ## Issue in Context
 
