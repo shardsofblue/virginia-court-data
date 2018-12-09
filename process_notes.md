@@ -10,18 +10,18 @@
 * [DONE]run same chart by percentage
 * [DONE]identify problem counties
 
-| REAL DAYS | PERC |
-| --- | --- |
-| Southampton*   |  ##Richmond City* |
-| Fauquier*      |  ##Southampton* |
-| Bristol*       |  ##Salem |
-| Richmond City* |  ##Alleghany^ |
-| Dinwiddie*     |  ##Norfolk^ |
-| Norfolk^       |  ##Britol* |
-| Alleghany^     |  ##Pulaski |
-| Lynchburg      |  ##Fauquier* |
-| Newport News   |  ##Dinwiddie* |
-| Virginia Beach |  ##York/Poquoson |
+REAL DAYS | PERC
+--- | ---
+Southampton    |  Richmond City
+Fauquier       |  Southampton
+Bristol        |  Salem
+Richmond City  |  Alleghany
+Dinwiddie      |  Norfolk
+Norfolk        |  Britol
+Alleghany      |  Pulaski
+Lynchburg      |  Fauquier
+Newport News   |  Dinwiddie
+Virginia Beach |  York/Poquoson
 
 * [DONE]research other articles about racial divide in sentence times
 
