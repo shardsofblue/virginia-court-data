@@ -1,9 +1,9 @@
 # Data Analysis Project — Final Memo
 
-_This memo is part of the [virginia-court-data repository](https://github.com/shardsofblue/virginia-court-data) on GitHub
-([direct link to memo](https://github.com/shardsofblue/virginia-court-data/blob/master/final-memo.md)). It was created in response to a [project requirement](https://github.com/smussenden/intro-to-data-journalism-public/blob/master/sessions/17/17-Homework-Assigned/A-Data-Analysis-Project.md) for JOUR-472 at the University of Maryland._ 
-
-_All analysis files can be found in the repository except the underlying data, which is too large for GitHub and so is stored [on Box](https://umd.box.com/s/v67sm2ppa6jnyn7pumn1u1af0rj403du)._
+* This memo is part of the [virginia-court-data repository](https://github.com/shardsofblue/virginia-court-data) on GitHub
+([direct link to memo](https://github.com/shardsofblue/virginia-court-data/blob/master/final-memo.md)). 
+* It was created in response to a [project requirement](https://github.com/smussenden/intro-to-data-journalism-public/blob/master/sessions/17/17-Homework-Assigned/A-Data-Analysis-Project.md) for JOUR-472 at the University of Maryland.
+* All analysis files can be found in the repository except the underlying data, which is too large for GitHub and so is stored [on Box](https://umd.box.com/s/v67sm2ppa6jnyn7pumn1u1af0rj403du).
 
 ## Primary Findings
 
