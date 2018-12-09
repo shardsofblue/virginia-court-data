@@ -265,7 +265,7 @@ chart1 <- ggplot(csf_charted, aes(x=reorder(name,-diff), diff)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1), legend.position="none")
 chart1
 
-ggsave("adjusted_real_diff.png", chart1, path="bits_bobs/bar_graphs")
+ggsave("adjusted_real_diff.png", chart1, path="bits_bobs/bar_graphs", width=12)
 
 ######################
 ## Adjusted Percent ##
@@ -286,7 +286,7 @@ chart2 <- ggplot(csf_charted, aes(x=reorder(name,-diff_perc), diff_perc)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1), legend.position="none")
 chart2
 
-ggsave("adjusted_percent_diff.png", chart2, path="bits_bobs/bar_graphs")
+ggsave("adjusted_percent_diff.png", chart2, path="bits_bobs/bar_graphs", width=12)
 
 #######################
 ## County Drill-down ##
@@ -305,6 +305,9 @@ top_5_all <- guilty_blackwhite_cases %>%
 top_5_grouped <- county_summary_filtered %>%
   filter(Fips_Where_Filed == 175 | Fips_Where_Filed == 61 | Fips_Where_Filed == 520 | Fips_Where_Filed == 760 | Fips_Where_Filed == 53)
 #View(top_5_grouped)
+
+highest_5_grouped <- county_summary_filtered %>%
+  filter(total_cases > 10000)
 
 #######################
 ## Finding Anecdotes ##
@@ -359,7 +362,7 @@ chart3 <- ggplot(over_10k, aes(x=reorder(name,-diff_perc), diff_perc)) +
            aes(fill = diff_perc)
   ) +
   labs(x = "Counties", y = "Average Percent Difference", title = "Percent Difference Between Black and White Sentence Times") +
-  theme_cowplot(font_size=6) +
+  theme_cowplot(font_size=12) +
   background_grid(
     major = c("xy"), minor = c("y"),
     size.major = 0.5, size.minor = 0.0, 

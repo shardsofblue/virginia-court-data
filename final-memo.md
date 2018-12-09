@@ -6,16 +6,16 @@ In many Virginia counties, black people are spending more time in prison than wh
 
 Across Virginia from 2007-2017, black people were sentenced to about a half year longer in prison than white people, an average of 25 percent more time. That's 6 percent more than the national average as reported in 2017 by the U.S. Sentencing Commission.
 
-But in individual counties, the difference was sometimes much greater.
+But in individual court jurisdictions, the difference was sometimes much greater.
 
-Fifty-six of the 67 counties studied showed black people serving longer sentences than white. Southhampton was one of the worst offenders, with black people spending an average of 1.5 years longer behind bars, 52 percent more time than white people.
+Fifty-six of the 67 localities studied showed black people serving longer sentences than white. Southhampton was one of the worst offenders, with black people spending an average of 1.5 years longer behind bars, 52 percent more time than white people.
 
-Of the remaining 11 counties, the greatest swing in the other direction — where white people spent longer in prison than black — was in Bedford, a 51 percent difference or about one year.
+Of the remaining 11 localities, the greatest swing in the other direction — where white people spent longer in prison than black — was in Bedford, a 51 percent difference or about one year.
 
 ![Percent difference](bits_bobs/bar_graphs/adjusted_percent_diff.png)
 
-Finally, the five most populous counties — each at more than 10,000 people — all showed sentence disparities in which black people served longer sentence times than white people. Percent difference:
-* Richmond: 56 
+Finally, the five most populous areas — each at more than 10,000 people — all showed sentence disparities in which black people served longer sentence times than white people. Percent difference:
+* Richmond City: 56 
 * Norfolk: 48 
 * Henrico: 44 
 * Chesterfield: 39
