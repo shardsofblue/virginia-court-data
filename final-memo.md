@@ -1,7 +1,9 @@
-# Data Analysis Project Memo
+# Data Analysis Project — Final Memo
 
-_This memo is part of the [virginia-court-data repository](https://github.com/shardsofblue/virginia-court-data) on GitHub.
-([Direct link](https://github.com/shardsofblue/virginia-court-data/blob/master/final-memo.md))_
+_This memo is part of the [virginia-court-data repository](https://github.com/shardsofblue/virginia-court-data) on GitHub
+([direct link to memo](https://github.com/shardsofblue/virginia-court-data/blob/master/final-memo.md)). It was created in response to a [project requirement](https://github.com/smussenden/intro-to-data-journalism-public/blob/master/sessions/17/17-Homework-Assigned/A-Data-Analysis-Project.md) for JOUR-472 at the University of Maryland._ 
+
+_All analysis files can be found in the repository except the underlying data, which is too large for GitHub and so is stored [on Box](https://umd.box.com/s/v67sm2ppa6jnyn7pumn1u1af0rj403du)._
 
 ## Primary Findings
 
@@ -124,7 +126,12 @@ All three defendants received a sentence of five years, but both white defendant
 - Take special with any anecdotes to ensure they are representative and account for outstanding factors
 - Interview county prosecutors, judges, legal experts and county clerks to allow them to respond to my findings and provide alternate explanations besides racial bias
 
-
+## Miscellaneous Process Notes
+- Initial exploratory analysis was done in PostgreSQL in _[analysis.sql](https://github.com/shardsofblue/virginia-court-data/blob/master/analysis.sql)_.
+- After aggregating the data by case as detailed above, I moved all analysis work to _[aggregate\_analysis.R](https://github.com/shardsofblue/virginia-court-data/blob/master/aggregate\_analysis.R)_.
+- Within the R analysis, I created a number of [histograms](https://github.com/shardsofblue/virginia-court-data/tree/master/bits_bobs/histograms/adjusted_sent_times_by_fips) to quickly overview adjusted sentence times across different locations. These ultimately went unused in the final analysis.
+- Similarly, I ran but did not ultimately make use of an analysis of the number of cases over time, including the creation of a line chart comparing the top five most disparate locations.
+- Many actions in the R file are commented out to allow re-running the entire file so the working environment can be recreated without View windows popping open or duplicate files being created.
 
 
 

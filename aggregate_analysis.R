@@ -423,13 +423,3 @@ i2 <- grouped_by_year %>%
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
 i2
 
-# Plot sentence times by race/fips/year (Line 232)
-
-###############################################
-## Repeat analysis with added year breakdown ##
-###############################################
-
-# would like to see how disparity has changed over time. This means repeating the spread on line 155 and the analysis below it to further break out the groups by race and adding difference to each year
-#mean_sent_by_racefipsyear <- #stuff#
-#View(mean_sent_by_racefipsyear)
-
