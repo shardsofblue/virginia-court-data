@@ -1,5 +1,8 @@
 # Data Analysis Project Memo
 
+_This memo is part of the [virginia-court-data repository](https://github.com/shardsofblue/virginia-court-data) on GitHub.
+([Direct link](https://github.com/shardsofblue/virginia-court-data/blob/master/final-memo.md))_
+
 ## Primary Findings
 
 In many Virginia counties, black people are spending more time in prison than white people for committing the same crimes. This analysis is the first of its kind in Virginia, but the findings are consistent with other recent nation- and state-wide analyses (see [below](#issue-in-context)).
@@ -14,14 +17,14 @@ Of the remaining 11 localities, the greatest swing in the other direction — wh
 
 ![Percent difference](bits_bobs/bar_graphs/adjusted_percent_diff.png)
 
-Finally, the five most populous areas — each at more than 10,000 people — all showed sentence disparities in which black people served longer sentence times than white people. Percent difference:
+Finally, the five areas with the most cases — each at more than 10,000 cases — all showed sentence disparities in which black people served longer sentence times than white people. Percent difference:
 * Richmond City: 56 
 * Norfolk: 48 
 * Henrico: 44 
 * Chesterfield: 39
 * Chesapeake: 35
 
-<img src="bits_bobs/bar_graphs/adjusted_percent_diff_10k-1.png" alt="Percent difference in top 5 most highly populated counties" width="400"/>
+<img src="bits_bobs/bar_graphs/adjusted_percent_diff_10k-1.png" alt="Percent difference in top 5 counties with the most cases" width="400"/>
 
 
 ## Issue in Context
@@ -38,7 +41,7 @@ The Herald Tribune completed in December 2016 an exhaustive analysis of racial d
 >
 >The newspaper also built a first-of-its-kind database of Florida’s criminal judges to compare sentencing patterns based on everything from a judge's age and previous work experience to race and political affiliation.
 
-This analysis looked specifically at sentence disparities across types of crimes both across the state and in individual counties. Florida courts use a point system, so the Herald analysis was able to take into account not only similar charges but similar point values assigned to defendants, as well. 
+This analysis looked specifically at sentence disparities across types of crimes both across the state and in individual counties. Florida courts use a point system to classify defendants, so the Herald analysis was able to take into account not only similar charges but similar point values, as well. 
 
 Their findings:
 >[Trial judges] offer blacks fewer chances to avoid jail or scrub away felonies.
@@ -50,10 +53,13 @@ The article begins by laying out its general findings, which are numerous, then 
 ### Academic Research
 - [Examining Sentencing Disparity in Virginia: The Impact of Race and Sex on Mitigating Departures for Drug Offenders](https://www.emeraldinsight.com/doi/abs/10.1108/S1521-613620170000022010), Sociology of Crime, Law and Deviance, Volume 22, Emerald Publishing Limited; 2017
 
+  - Findings:
+>Defendant race and sex exert both direct and interactive effects on decisions to sentence offenders below the guidelines for both drug categories. Cases involving Black and male defendants, relative to white and female defendants, are significantly less likely to result in mitigating departures for Schedule I & II, and Other drug, violations.
+
 
 ## Strengths and Limitations of Analysis
 ### Scope
-My analysis looked at sentence times for black and white people found guilty of a crime, adjusted for sentence suspensions from 2007 to 2017. It only considered counties with at least 1,000 of such cases and a 25 percent minimum percentage of cases in each of the two racial categories.
+My analysis looked at sentence times for black and white people found guilty of a crime, adjusted for sentence suspensions from 2007 to 2017. It only considered counties with at least 1,000 of such cases and a 25 percent minimum percentage of cases in each of the two racial categories. The underlying data was scraped by [Ben Schoenfeld](https://medium.com/@virginiacourtdata/virginia-court-data-fields-e224a9a41e15) from Virginia's searchable online database of court cases.
 
 ### Strengths
 Because the data set is not a sample of cases but rather every case, statistical variance is not an issue. Additionally, because I only analyzed counties with a given threshold of total and black/white cases, I limited the effect of outlier cases on the overall results. 
@@ -82,26 +88,27 @@ Two white defendants and one black were charged with and found guilty of a singl
 All three defendants received a sentence of five years, but both white defendants had their sentences suspended by the full amount, while the black defendant had to serve about three months in prison.
 
 ## Next Steps
-### Verification and Fairness
-- Compare against the Emerald journal's findings
-- Speak with county clerks to ensure proper understanding of crime codes and crime descriptions, as needed
-- Interview county prosecutors, judges, legal experts and county clerks to allow them to respond to my findings and provide alternate explanations besides racial bias
-- Take special care to ensure any anecdotes account for outstanding factors such as criminal history
 
 ### Code Adjustments
 - Clean up existing R code for better utility and reproducibility
 - Tweak aggregation to add birthday, sex and offense date as differentiating factors
+- Clean crime type fields and re-agregate
 
 ### Further Reporting and Analysis
 - Dive deeper into each county to look for outlier cases that may be skewing results
-- Clean crime type fields and re-agregate for analysis
+- Analyze by crime type
 - More deeply analyze the Emerald journal's findings and the report from USSC (file FOIA for underlying data)
-- Discuss methodology with Herald reporters
+- Reach out to Herald reporters to discuss methodology
 - Compare rates of sentencing with census data on racial demographics for deeper context within counties
-- Find especially interesting cases to use as anecdotes, then look more deeply into them and interview relevant parties (defendants, judges, prosecutors, etc.), preferably on location to be able to add descriptors of the areas in question
+- Find especially interesting cases to use as anecdotes, then look more deeply into them and interview relevant parties (defendants, judges, prosecutors, etc.)
+- Visit the locations to write first-hand descriptors of the areas in question
 - Examine how the disparity has changed over time statewide and in specific counties
 
-
+### Verification and Fairness
+- Compare against the Emerald journal's findings
+- Speak with county clerks to ensure proper understanding of crime codes and crime descriptions, as needed
+- Take special with any anecdotes to ensure they are representative and account for outstanding factors
+- Interview county prosecutors, judges, legal experts and county clerks to allow them to respond to my findings and provide alternate explanations besides racial bias
 
 
 
