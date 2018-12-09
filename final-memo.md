@@ -14,6 +14,7 @@ But in individual court jurisdictions, the difference was sometimes much greater
 Fifty-six of the 67 localities studied showed black people serving longer sentences than white. Southhampton was one of the worst offenders, with black people spending an average of 1.5 years longer behind bars, 52 percent more time than white people.
 
 Counties with greatest disparities:
+
 REAL DAYS | PERC
 --- | ---
 Southampton    |  Richmond City
