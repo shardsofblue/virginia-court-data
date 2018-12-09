@@ -5,7 +5,7 @@
 * It was created in response to a [project requirement](https://github.com/smussenden/intro-to-data-journalism-public/blob/master/sessions/17/17-Homework-Assigned/A-Data-Analysis-Project.md) for JOUR-472 at the University of Maryland.
 * All analysis files can be found in the repository except the underlying data, which is too large for GitHub and so is stored [on Box](https://umd.box.com/s/v67sm2ppa6jnyn7pumn1u1af0rj403du).
 
-## Primary Findings
+## Findings
 
 In many Virginia counties, black people are spending more time in prison than white people for committing the same crimes. This analysis is the first of its kind in Virginia, but the findings are consistent with other recent nation- and state-wide analyses (see [below](#issue-in-context)).
 
