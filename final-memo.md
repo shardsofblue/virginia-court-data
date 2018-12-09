@@ -26,9 +26,9 @@ Finally, the five areas with the most cases — each at more than 10,000 — all
 * Chesterfield: 39
 * Chesapeake: 35
 
-Percent difference in localities with the most cases | Percent difference over time in top 5 localities with the most cases
+Percent difference in localities with the most cases | Percent difference over time in localities with the most cases
 --- | ---
-<img src="bits_bobs/bar_graphs/adjusted_percent_diff_10k-1.png" alt="Percent difference in localities with the most cases" width="400"/> | <img src="bits_bobs/bits_bobs/line_charts/10k-sent-diff.png" alt="Percent difference over time in top 5 localities with the most cases" width="400"/> 
+<img src="bits_bobs/bar_graphs/adjusted_percent_diff_10k-1.png" alt="Percent difference in localities with the most cases" width="400"/> | <img src="bits_bobs/line_charts/10k-sent-diff.png" alt="Percent difference over time in top 5 localities with the most cases" width="400"/> 
 
 Counties with greatest disparities:
 
