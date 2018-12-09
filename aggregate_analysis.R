@@ -158,6 +158,12 @@ mean_sent_by_racefips <- guilty_blackwhite_cases %>%
   summarise(mean_adjusted_sentence = mean(Adjusted_Sentence))
 #View(mean_sent_by_racefips)
 
+View(guilty_blackwhite_cases)
+mean_sent_by_racefipsyear <- guilty_blackwhite_cases %>%
+  group_by(Race, Fips_Where_Filed, Year_Filed) %>%
+  summarise(mean_adjusted_sentence = mean(Adjusted_Sentence))
+#View(mean_sent_by_racefipsyear)
+
 # Averages by race within a single fips
 fips760 <- fips_filter(mean_sent_by_racefips, 760)
 #View(fips760)
@@ -177,6 +183,17 @@ county_summary <- mean_sent_by_racefips %>%
 county_summary <- county_summary[,c(1,6,2,3:5)] # reorganize to put name next to fips
 setnames(county_summary, old=c("Black (Non-Hispanic)","White Caucasian (Non-Hispanic)"), new=c("black_avg_sent_times", "white_avg_sent_times")) # give columns meaningful names
 #View(county_summary)
+
+#county summary stats by race and year
+county_summary2 <- mean_sent_by_racefipsyear %>%
+  spread(Race, mean_adjusted_sentence) %>%
+  mutate(
+    diff = `Black (Non-Hispanic)` - `White Caucasian (Non-Hispanic)`, # for each fips, substract avg_sent if(black) from avg_sent if(white)
+    diff_perc = round(((diff/`Black (Non-Hispanic)`)*100),2) #value for black and white calculated as a percentage of black sent times
+  ) %>%
+  inner_join(fips_data_table,by=c("Fips_Where_Filed"="fips")) # add the name of the location by fips code
+setnames(county_summary2, old=c("Black (Non-Hispanic)","White Caucasian (Non-Hispanic)", "name"), new=c("black_avg_sent_times", "white_avg_sent_times", "County")) # give columns meaningful names
+#View(county_summary2)
 
 #compute number of cases per race by fips
 count_sent_by_racefips <- guilty_blackwhite_cases %>%
@@ -222,7 +239,7 @@ county_summary <- inner_join(county_summary, mean_sent_by_racefips_t, by=c("Fips
 #output the data frame as a csv file to view in other programs
 write.csv(county_summary, file = "data/county_summary.csv")
 
-View(summary(county_summary))
+#View(summary(county_summary))
 
 # Look at only counties where at least 50 black people were charged, to reduce the swing caused by any individual case
 county_summary_filtered <- county_summary %>%
@@ -370,7 +387,15 @@ richmond_drill_down <- richmond_all %>%
 # Dataframe where total cases > 10,000
 over_10k <- csf_charted %>%
   filter(total_cases > 10000)
-View(over_10k)
+#View(over_10k)
+
+over_10k_all <- guilty_blackwhite_cases %>%
+  filter(Fips_Where_Filed == 41 | Fips_Where_Filed == 87 | Fips_Where_Filed == 550 | Fips_Where_Filed == 760 | Fips_Where_Filed == 710)
+#View(over_10k_all)
+
+over_10k_all_yr <- county_summary2 %>%
+  filter(Fips_Where_Filed == 41 | Fips_Where_Filed == 87 | Fips_Where_Filed == 550 | Fips_Where_Filed == 760 | Fips_Where_Filed == 710)
+#View(over_10k_all_yr)
 
 # Create a chart showing the distribution of means as bars compared to a center point
 chart3 <- ggplot(over_10k, aes(x=reorder(name,-diff_perc), diff_perc)) +
@@ -393,7 +418,7 @@ ggsave("adjusted_percent_diff_10k.png", chart3, path="bits_bobs/bar_graphs")
 ## Number of Cases Over Time ##
 ###############################
 
-# Count the number of cases in each county in each year
+# Count the number of cases in top 5 counties in each year
 grouped_by_year <- top_5_all %>%
   group_by(Fips_Where_Filed, Year_Filed) %>%
   summarise(num_cases = n(),
@@ -401,7 +426,15 @@ grouped_by_year <- top_5_all %>%
             avg_adj_time = mean(Adjusted_Sentence))
 #View(grouped_by_year)
 
-# Join county names info
+# Count the number of cases in most cases counties in each year
+grouped_by_year_10k <- over_10k_all %>%
+  group_by(Fips_Where_Filed, Year_Filed) %>%
+  summarise(num_cases = n(),
+            avg_init_time = mean(Sentence_Time_Total),
+            avg_adj_time = mean(Adjusted_Sentence))
+#View(grouped_by_year_10k)
+
+# Join county names info to top 5
 grouped_by_year <- grouped_by_year %>%
   inner_join(fips_data_table,by=c("Fips_Where_Filed"="fips"))  # add the name of the location by fips
 setnames(grouped_by_year,old=c("name"), new=c("County")) # give columns meaningful names
@@ -409,8 +442,17 @@ grouped_by_year$County <- str_replace(grouped_by_year$County, " Circuit Court", 
 grouped_by_year$County <- factor(grouped_by_year$County) # make counties distinct
 grouped_by_year$Year_Filed <- factor(grouped_by_year$Year_Filed) # make years distinct
 
-# Plot number of cases by fips/year
-i1 <- grouped_by_year %>%
+# Join county names info to 10k counties
+grouped_by_year_10k <- grouped_by_year_10k %>%
+  inner_join(fips_data_table,by=c("Fips_Where_Filed"="fips"))  # add the name of the location by fips
+setnames(grouped_by_year_10k,old=c("name"), new=c("County")) # give columns meaningful names
+grouped_by_year_10k$County <- str_replace(grouped_by_year_10k$County, " Circuit Court", "") # trim off repetitive naming
+grouped_by_year_10k$County <- factor(grouped_by_year_10k$County) # make counties distinct
+grouped_by_year_10k$Year_Filed <- factor(grouped_by_year_10k$Year_Filed) # make years distinct
+View(grouped_by_year_10k)
+
+# Plot number of cases by fips/year for top 5
+i1a <- grouped_by_year %>%
   ggplot(aes(x = Year_Filed, 
              y = num_cases,
              group = County,
@@ -422,10 +464,11 @@ i1 <- grouped_by_year %>%
   ylab("Number") +
   theme_gray() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
-i1
+i1a #view in workspace
+ggsave("top-5-num-cases.png", i1a, path="bits_bobs/line_charts") #save to file
 
 # Plot sentence times by fips/year
-i2 <- grouped_by_year %>%
+i2a <- grouped_by_year %>%
   ggplot(aes(x = Year_Filed, 
              y = avg_adj_time,
              group = County,
@@ -437,5 +480,52 @@ i2 <- grouped_by_year %>%
   ylab("Days Sentenced") +
   theme_gray() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
-i2
+i2a #view in workspace
 
+# Plot number of cases by fips/year for 10k
+i1b <- grouped_by_year_10k %>%
+  ggplot(aes(x = Year_Filed, 
+             y = num_cases,
+             group = County,
+             colour = County,
+             label = County)) +
+  geom_line(stat = "identity") +
+  ggtitle("Number of Guilty Cases") +
+  xlab("Year") +
+  ylab("Number") +
+  theme_gray() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+i1b #view in workspace
+ggsave("10k-num-cases.png", i1b, path="bits_bobs/line_charts") #save to file
+
+# Plot sentence times by fips/year for 10k
+i2b <- grouped_by_year_10k %>%
+  ggplot(aes(x = Year_Filed, 
+             y = avg_adj_time,
+             group = County,
+             colour = County,
+             label = County)) +
+  geom_line(stat = "identity") +
+  ggtitle("Average Sentence Times") +
+  xlab("Year") +
+  ylab("Days Sentenced") +
+  theme_gray() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+i2b #view in workspace
+ggsave("10k-sent-times.png", i2b, path="bits_bobs/line_charts") #save to file
+
+# Plot sentence time disparity by fips, year for 10k
+i3 <- over_10k_all_yr %>%
+  ggplot(aes(x = as.factor(Year_Filed), 
+             y = diff,
+             group = County,
+             colour = County,
+             label = County)) +
+  geom_line(stat = "identity") +
+  ggtitle("Average Sentence Times") +
+  xlab("Year") +
+  ylab("Days Difference") +
+  theme_gray() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+i3 #view in workspace
+ggsave("10k-sent-diff.png", i3, path="bits_bobs/line_charts") #save to file

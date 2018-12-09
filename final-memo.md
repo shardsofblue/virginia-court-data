@@ -15,18 +15,20 @@ But in individual court jurisdictions, the difference was sometimes much greater
 
 Fifty-six of the 67 localities studied showed black people serving longer sentences than white. Richmond City was the worst offender, with black people spending an average of 1.9 years behind bars, while white people spent lest than a year, a 56 percent difference.
 
-Of the remaining 11 localities, the greatest swing in the other direction — where white people spent longer in prison than black — was in Bedford, a 51 percent difference or about one year.
+Of the remaining 11 localities, the greatest swing in the other direction — where white people spent longer in prison than black — was in Bedford, a 51 percent difference, or about one year.
 
 ![Percent difference](bits_bobs/bar_graphs/adjusted_percent_diff.png)
 
-Finally, the five areas with the most cases — each at more than 10,000 cases — all showed sentence disparities in which black people served longer sentence times than white people. Percent difference:
+Finally, the five areas with the most cases — each at more than 10,000 — all showed sentence disparities in which black people served longer sentence times than white people. Percent difference:
 * Richmond City: 56 
 * Norfolk: 48 
 * Henrico: 44 
 * Chesterfield: 39
 * Chesapeake: 35
 
-<img src="bits_bobs/bar_graphs/adjusted_percent_diff_10k-1.png" alt="Percent difference in top 5 counties with the most cases" width="400"/>
+Percent difference in localities with the most cases | Percent difference over time in top 5 localities with the most cases
+--- | ---
+<img src="bits_bobs/bar_graphs/adjusted_percent_diff_10k-1.png" alt="Percent difference in localities with the most cases" width="400"/> | <img src="bits_bobs/bits_bobs/line_charts/10k-sent-diff.png" alt="Percent difference over time in top 5 localities with the most cases" width="400"/> 
 
 Counties with greatest disparities:
 
@@ -78,20 +80,20 @@ The article begins by laying out its general findings, which are numerous, then 
 My analysis looked at sentence times for black and white people found guilty of a crime, adjusted for sentence suspensions from 2007 to 2017. It only considered counties with at least 1,000 of such cases and a 25 percent minimum percentage of cases in each of the two racial categories. The underlying data was scraped by [Ben Schoenfeld](https://medium.com/@virginiacourtdata/virginia-court-data-fields-e224a9a41e15) from Virginia's searchable online database of court cases.
 
 ### Strengths
-Because the data set is not a sample of cases but rather every case, statistical variance is not an issue. Additionally, because I only analyzed counties with a given threshold of total and black/white cases, I limited the effect of outlier cases on the overall results. 
+Because the data set is not a sample of cases but rather a complete set of every case in the time period, statistical variance is not an issue. Additionally, because I only analyzed counties with a given threshold of total and black/white cases, I limited the effect of outlier cases on the overall results. 
 
 In order to understand each case holistically, I grouped charges based on defendant name, location, year filed and race. This should allow a more truthful understanding of sentencing times per case, as opposed to looking at each charge individually. 
 
 ### Weaknesses
 The analysis only uses high numbers of cases to limit the effect of outlier cases. A more thorough analysis would look more closely into each county to identify and understand potential outlier cases and their effect on the results.
 
+The underlying data set analyzed did not include some counties, most notably Fairfax County, which has a population of more than 1 million people.
+
 The aggregation did not take into account birthdays or dates of offense, so this grouping may need further adjustment to ensure unrelated cases are not grouped together. 
 
 This analysis did not control for the same variables as the USSC report. Some, such as age and criminal history, are not included in the data I analyzed.
 
 Particularly problematic is a lack of a systematic analysis of crime types, though I did spot check the crimes to get a feel for the types of crimes. A more complete analysis would look more like that of the Herald Tribune, which examined crime types across the state and within individual localities. Unfortunately, the fields holding crime types are extremely messy and will require many hours of cleaning before these data are usable. 
-
-The underlying data set analyzed did not include some counties, most notably Fairfax County, which has a population of more than 1 million people.
 
 Finally, the R code is messy and difficult to reproduce. This is a result of learning and applying the language on the fly. Since an important part of this analysis was finishing it on deadline, clean code was not my priority; but I could and should clean it up given the time. 
 
@@ -106,31 +108,31 @@ All three defendants received a sentence of five years, but both white defendant
 ## Next Steps
 
 ### Code Adjustments
-- Clean up existing R code for better utility and reproducibility
-- Tweak aggregation to add birthday, sex and offense date as differentiating factors
-- Clean crime type fields and re-agregate
+- Clean up existing R code for better utility and reproducibility.
+- Tweak aggregation to add birthday, sex and offense date as differentiating factors.
+- Clean crime type fields and re-agregate.
 
 ### Further Reporting and Analysis
-- Dive deeper into each county to look for outlier cases that may be skewing results
-- Analyze by crime type
-- More deeply analyze the Emerald journal's findings and the report from USSC (file FOIA for underlying data)
-- Reach out to Herald reporters to discuss methodology
-- Compare rates of sentencing with census data on racial demographics for deeper context within counties
-- Find especially interesting cases to use as anecdotes, then look more deeply into them and interview relevant parties (defendants, judges, prosecutors, etc.)
+- Dive deeper into each county to look for outlier cases that may be skewing results.
+- Analyze by crime type.
+- More deeply analyze the Emerald journal's findings and methodology and the report from USSC (file FOIA for underlying data).
+- Reach out to Herald reporters to discuss methodology.
+- Compare rates of sentencing with census data on racial demographics for deeper context within counties.
+- Find especially interesting cases to use as anecdotes, then look more deeply into them and interview relevant parties (defendants, judges, prosecutors, etc.).
 - Visit the locations to write first-hand descriptors of the areas in question
-- Examine how the disparity has changed over time statewide and in specific counties
+- Examine how the disparity has changed over time statewide and in specific counties.
 
 ### Verification and Fairness
-- Compare against the Emerald journal's findings
-- Speak with county clerks to ensure proper understanding of crime codes and crime descriptions, as needed
-- Take special with any anecdotes to ensure they are representative and account for outstanding factors
-- Interview county prosecutors, judges, legal experts and county clerks to allow them to respond to my findings and provide alternate explanations besides racial bias
+- Compare against the Emerald journal's findings.
+- Speak with county clerks to ensure proper understanding of crime codes and crime descriptions, as needed.
+- Take special care with any anecdotes to ensure they are representative and account for outstanding factors.
+- Interview county prosecutors, judges, legal experts and county clerks to allow them to respond to my findings and provide alternate explanations besides racial bias.
 
 ## Miscellaneous Process Notes
 - Initial exploratory analysis was done in PostgreSQL in _[analysis.sql](https://github.com/shardsofblue/virginia-court-data/blob/master/analysis.sql)_.
 - After aggregating the data by case as detailed above, I moved all analysis work to _[aggregate\_analysis.R](https://github.com/shardsofblue/virginia-court-data/blob/master/aggregate\_analysis.R)_.
 - Within the R analysis, I created a number of [histograms](https://github.com/shardsofblue/virginia-court-data/tree/master/bits_bobs/histograms/adjusted_sent_times_by_fips) to quickly overview adjusted sentence times across different locations. These ultimately went unused in the final analysis.
-- Similarly, I ran but did not ultimately make use of an analysis of the number of cases over time, including the creation of a line chart comparing the top five most disparate locations.
+- Similarly, I ran but did not ultimately make use of an analysis of the number of cases over time, including the creation of a [line chart](https://github.com/shardsofblue/virginia-court-data/tree/master/bits_bobs/line_charts/10k-num-cases.png) comparing the top five most disparate locations.
 - Many actions in the R file are commented out to allow re-running the entire file so the working environment can be recreated without View windows popping open or duplicate files being created.
 
 
