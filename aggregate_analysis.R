@@ -159,8 +159,8 @@ mean_sent_by_racefips <- guilty_blackwhite_cases %>%
 #View(mean_sent_by_racefips)
 
 # Averages by race within a single fips
-fips77 <- fips_filter(mean_sent_by_racefips, 77)
-#View(fips77)
+fips760 <- fips_filter(mean_sent_by_racefips, 760)
+#View(fips760)
 
 ###################################################################
 ## Compare differences between black and white average sentences ##
@@ -199,7 +199,7 @@ county_summary <- mutate(county_summary, total_cases=black_num_cases + white_num
 county_summary <- mutate(county_summary, perc_black = round(((black_num_cases/total_cases)*100),2) )
 #View(county_summary)
 
-## PRE ADJUSTMENT NUMBERS ADDED (*_t)
+## PRE ADJUSTMENT NUMBERS (*_t)
 #determine mean of the total sentence times before adjustment
 mean_sent_by_racefips_t <- guilty_blackwhite_cases %>%
   group_by(Race, Fips_Where_Filed) %>%
@@ -295,6 +295,22 @@ ggsave("adjusted_percent_diff.png", chart2, path="bits_bobs/bar_graphs", width=1
 # What did the people in the top disparate counties do?
 #View(fips_filter(aggregate_data_table, 760)) #Richmond, just more than a year
 #View(fips_filter(aggregate_data_table, 175)) #Scott
+
+# Look at Richmond City
+fips760 <- fips_filter(county_summary, 760)
+#View(fips760)
+#black: 1.9
+#white: .8
+#diff: 1.1
+#perc diff: 56
+
+# Look at bedford
+fips19 <- fips_filter(county_summary, 19)
+#View(fips19)
+#black: 1.9
+#white: .8
+#diff: 1.1
+#perc diff: 56
 
 # Dataframe holding all info for the top 5 worst-offender counties
 top_5_all <- guilty_blackwhite_cases %>%

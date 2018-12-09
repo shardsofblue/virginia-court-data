@@ -13,7 +13,7 @@ Across Virginia from 2007-2017, black people were sentenced to about a half year
 
 But in individual court jurisdictions, the difference was sometimes much greater.
 
-Fifty-six of the 67 localities studied showed black people serving longer sentences than white. Southhampton was one of the worst offenders, with black people spending an average of 1.5 years longer behind bars, 52 percent more time than white people.
+Fifty-six of the 67 localities studied showed black people serving longer sentences than white. Richmond City was the worst offender, with black people spending an average of 1.9 years behind bars, while white people spent lest than a year, a 56 percent difference.
 
 Of the remaining 11 localities, the greatest swing in the other direction — where white people spent longer in prison than black — was in Bedford, a 51 percent difference or about one year.
 
